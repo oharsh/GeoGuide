@@ -16,10 +16,10 @@
 '''
 ############################## FILL THE MANDATORY INFORMATION BELOW ###############################
 
-# Team ID:			[ Team-ID ]
-# Author List:		[ Names of team members worked on this file separated by Comma: Name1, Name2, ... ]
+# Team ID:			[ 1667 ]
+# Author List:		[ Abhishek Ranjan, Harsh Yadav, Arijit Goswami, Gaurav Singh ]
 # Filename:			Task_2D.py
-# Functions:	    [ Function names ]
+# Functions:	    [ read_csv(), write_csv(), tracker() ]
 ###################################################################################################
 
 # IMPORTS (DO NOT CHANGE/REMOVE THESE IMPORTS)
@@ -94,6 +94,14 @@ def tracker(ar_id, lat_lon):
     ADD YOUR CODE HERE
 
     '''
+    coordinate = None
+    
+    if ar_id in lat_lon:
+        coordinate = lat_lon[ar_id]
+        with open("live_location.csv",'w') as csv_file:
+            csv_writer = csv.writer(csv_file)
+            csv_writer.writerow([lat_lon['header']])
+            csv_writer.writerow(coordinate )
     # also return coordinate ([lat, lon]) associated with respective ar_id.
     return coordinate
 
