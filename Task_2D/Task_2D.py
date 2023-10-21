@@ -53,8 +53,19 @@ def read_csv(csv_name):
 
     '''
     ADD YOUR CODE HERE
+    
 
     '''
+    with open(csv_name) as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        headers = next(csv_reader)
+
+        for row in csv_reader:
+            id = int(row[0])
+            lat = float(row[1])
+            lon = float(row[2])
+            lat_lon[id]= [lat,lon]
+        lat_lon['header']=headers
     return lat_lon 
 
 def write_csv(loc, csv_name):
