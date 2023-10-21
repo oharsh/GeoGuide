@@ -79,6 +79,10 @@ def write_csv(loc, csv_name):
     ADD YOUR CODE HERE
 
     '''
+    with open(csv_name,'w')as csv_file:
+        csv_writer = csv.writer(csv_file,delimiter=',')
+        csv_writer.writerow(['lat','lon'])
+        csv_writer.writerow(loc)
 
 def tracker(ar_id, lat_lon):
 
