@@ -16,10 +16,10 @@
 '''
 ############################## FILL THE MANDATORY INFORMATION BELOW ###############################
 
-# Team ID:			[ 1667 ]
-# Author List:		[ Abhishek Ranjan, Harsh Yadav, Arijit Goswami, Gaurav Singh ]
+# Team ID:			[ GG_1667 ]
+# Author List:		[ Abhishek Ranjan, Arijit Goswami, Harsh Yadav, Gaurav Singh]
 # Filename:			Task_2D.py
-# Functions:	    [ read_csv(), write_csv(), tracker() ]
+# Functions:	    [ Function names ]
 ###################################################################################################
 
 # IMPORTS (DO NOT CHANGE/REMOVE THESE IMPORTS)
@@ -31,7 +31,7 @@ import time
 You can import your required libraries here
 
 '''
-
+import codecs
 # DECLARING VARIABLES (DO NOT CHANGE/REMOVE THESE VARIABLES)
 path1 = [11, 14, 13, 18, 19, 20, 23, 21, 22, 33, 30, 35, 32, 31, 34, 40, 36, 38, 37, 39, 41, 50, 4, 6, 52, 7, 8, 1, 2, 11]
 path2 = [11, 14, 13, 10, 9, 51, 53, 0, 39, 37, 38, 28, 25, 54, 5, 3, 19, 20, 17, 12, 15, 16, 27, 26, 24, 29, 40, 34, 31, 32, 35, 30, 33, 22, 21, 23, 20, 19, 18, 13, 14, 11]
@@ -42,7 +42,6 @@ path2 = [11, 14, 13, 10, 9, 51, 53, 0, 39, 37, 38, 28, 25, 54, 5, 3, 19, 20, 17,
 You can delare the necessary variables here
 
 '''
-
 def read_csv(csv_name):
     lat_lon = {}
 
@@ -53,19 +52,15 @@ def read_csv(csv_name):
 
     '''
     ADD YOUR CODE HERE
-    
 
     '''
-    with open(csv_name) as csv_file:
-        csv_reader = csv.reader(csv_file, delimiter=',')
-        headers = next(csv_reader)
-
+    with open(csv_name,'r') as csv_file:
+        csv_reader = csv.reader(csv_file)
         for row in csv_reader:
-            id = int(row[0])
-            lat = float(row[1])
-            lon = float(row[2])
+            id = row[0]
+            lat = row[1]
+            lon = row[2]
             lat_lon[id]= [lat,lon]
-        lat_lon['header']=headers
     return lat_lon 
 
 def write_csv(loc, csv_name):
@@ -95,13 +90,13 @@ def tracker(ar_id, lat_lon):
 
     '''
     coordinate = None
-    
+    ar_id = str(ar_id)
     if ar_id in lat_lon:
         coordinate = lat_lon[ar_id]
-        with open("live_location.csv",'w') as csv_file:
+        with open("live_data.csv",'w') as csv_file:
             csv_writer = csv.writer(csv_file)
-            csv_writer.writerow([lat_lon['header']])
-            csv_writer.writerow(coordinate )
+            csv_writer.writerow(['lat','lon'])
+            csv_writer.writerow(coordinate)
     # also return coordinate ([lat, lon]) associated with respective ar_id.
     return coordinate
 
