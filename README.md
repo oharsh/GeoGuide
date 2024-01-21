@@ -17,8 +17,11 @@ Documentation: Includes essential documents such as task guidelines, design sche
 ## Team Members
 
 **Abhishek Ranjan** : [abhishekranjancodes](https://github.com/abhishekranjancodes)
+
 **Arijit Goswami**  : [@arijitgo](https://github.com/ArijitGo)
+
 **Harsh Yadav**     : [oharsh](https://github.com/oharsh)
+
 **Gaurav Singh**    : [thegauravsngh](https://github.com/thegauravsngh)
 
 ## Getting Started
