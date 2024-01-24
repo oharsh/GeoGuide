@@ -1,0 +1,22 @@
+int position = sensor2Value * 1.34 - sensor4Value * 1;
+  error = setPoint - position;
+  myPID.Compute();
+  out = map(output, 0, 255, -255, 255);
+
+  Serial.print(position);
+  Serial.print("  ");
+  Serial.print(error);
+  Serial.print("  ");
+  Serial.print(out);
+  Serial.print("  ");
+
+
+  // int leftSpeed = baseSpeed - out;
+  // leftSpeed = map(leftSpeed, -255, 255, 0, 255);
+  // int rightSpeed = baseSpeed + out;
+  // rightSpeed = map(rightSpeed, -255, 255, 0, 255);
+
+  // Serial.print(leftSpeed);
+  // Serial.print("  ");
+  // Serial.println(rightSpeed);
+  // // setMotorSpeeds(leftSpeed, rightSpeed);
