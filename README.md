@@ -52,7 +52,9 @@ Check the tasks folder for a breakdown of individual tasks and their status.
 ## Additional Information
 
 Competition Theme: GeoGuide
+
 Hardware Platform: Arduino IDE, QGIS
+
 Programming Language: Python, Machine Learning, Deep Learning, Open CV, Embedded C, C++ 
 
 ## Let's Collaborate!
