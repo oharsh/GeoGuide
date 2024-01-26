@@ -18,7 +18,7 @@ Documentation: Includes essential documents such as task guidelines, design sche
 
 **Abhishek Ranjan** : [abhishekranjancodes](https://github.com/abhishekranjancodes)
 
-**Arijit Goswami**  : [@arijitgo](https://github.com/ArijitGo)
+**Arijit Goswami**  : [arijitgo](https://github.com/ArijitGo)
 
 **Harsh Yadav**     : [oharsh](https://github.com/oharsh)
 
