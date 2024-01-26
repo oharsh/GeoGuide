@@ -5,18 +5,18 @@ const uint16_t dturn = 970;  //1200 //970
 const uint16_t dstr = 20;
 
 int sensor1Pin = 33;  
-int sensor2Pin = 34; 
-int sensor3Pin = 32; 
-int sensor4Pin = 25;  
-int sensor5Pin = 35;  
+int sensor2Pin = 32; 
+int sensor3Pin = 35; 
+int sensor4Pin = 34;  
+int sensor5Pin = 4;  //25
 
 int leftMotorPin1 = 12;
 int leftMotorPin2 = 14;
 int rightMotorPin1 = 27;
 int rightMotorPin2 = 26;
 
-const uint16_t enb = 4;
-const uint16_t ena = 2;
+const uint16_t ena = 13; //4
+const uint16_t enb = 25;
 
 int ledPin = 5;
 int buzzer = 15;
