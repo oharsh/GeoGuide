@@ -2,7 +2,8 @@ uint16_t leftSpeed = 255;
 uint16_t rightSpeed = 255;
 
 const uint16_t dturn = 970;  //1200 //970
-const uint16_t dstr = 20;
+const uint16_t turnDelay = 20;
+const uint16_t sideTurnDelay = 20;
 
 int sensor1Pin = 33;  
 int sensor2Pin = 32; 
@@ -97,7 +98,7 @@ void followLine(int s1, int s2, int s3, int s4, int s5) {
   if (currentRoadIndex == 11){
     long int start = millis();
     while (millis() - start < 1000){
-      follow();
+      blackFollow();
     }
     stop();
     digitalWrite(ledPin, HIGH);
@@ -112,17 +113,17 @@ void followLine(int s1, int s2, int s3, int s4, int s5) {
   else {
     if (s3 == HIGH && s2 == LOW && s4 == LOW){
       forward();
-      delay(dstr);
+      delay(turnDelay);
     }
     else if (s2 == HIGH || s4 == HIGH){
       if (s2 == HIGH ^ s4 == HIGH ){
         if (s2 == HIGH){
           left();
-          delay(dstr);
+          delay(turnDelay);
         }
         else {
           right();
-          delay(dstr);
+          delay(turnDelay);
         }
 
         
@@ -132,11 +133,11 @@ void followLine(int s1, int s2, int s3, int s4, int s5) {
       if (s1 == HIGH ^ s5 == HIGH){
         if (s1 == HIGH){
           right();
-          delay(dstr);
+          delay(sideTurnDelay);
         }
         else {
           left();
-          delay(dstr);
+          delay(sideTurnDelay);
         }
       }
       else {
@@ -233,7 +234,7 @@ void printInfo(int analog, int digital){
   Serial.print("  ");
 }
 
-void follow(){
+void blackFollow(){
   // int sensor1Value = analogRead(sensor1Pin);
   int s2 = analogRead(sensor2Pin);
   int s3 = analogRead(sensor3Pin);
@@ -242,21 +243,30 @@ void follow(){
   s2 = black(s2, 3100);
   s3 = black(s3, 3500);
   s4 = black(s4, 3500);
-  // int sensor5Value = analogRead(sensor5Pin);
+
+
   if (s3 == HIGH && s2 == LOW && s4 == LOW){
       forward();
-      delay(dstr);
+      delay(turnDelay);
     }
     else if (s2 == HIGH || s4 == HIGH){
       if (s2 == HIGH ^ s4 == HIGH ){
         if (s2 == HIGH){
           left();
-          delay(dstr);
+          delay(turnDelay);
         }
         else {
           right();
-          delay(dstr);
+          delay(turnDelay);
         }
       }
     }
+}
+
+int read(int pin, int ref){
+
+  int final = analogRead(pin);
+  final = black(final, ref);
+  return final;
+
 }
