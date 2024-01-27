@@ -1,3 +1,10 @@
+#include <WiFi.h>
+
+const char* ssid = "espforfun";
+const char* pass = "jaimatadi";
+const uint16_t port = 8002; 
+const char* host = "";
+
 uint16_t leftSpeed = 255;
 uint16_t rightSpeed = 255;
 
@@ -32,9 +39,16 @@ State currentState = FOLLOW_LINE;
 char roadConfiguration[] = "SSRLRRSRSLS"; 
 int currentRoadIndex = 0;
 
+WiFiClient client;
+String msg ;
+int command ;
+
 void setup() {
 
   delay(5000);
+
+  Serial.begin(115200);
+  while(!Serial){delay(100);}
 
   pinMode(leftMotorPin1, OUTPUT);
   pinMode(leftMotorPin2, OUTPUT);
@@ -52,11 +66,25 @@ void setup() {
   digitalWrite(ledPin, LOW);
   digitalWrite(buzzer, HIGH);
 
+  WiFi.begin(ssid, pass);
+
+  while(!WiFi.status() != WL_CONNECTED){
+    delay(500);
+    Serial.println("...");
+  }
+
+  Serial.print("connected to: ");
+  Serial.println(WiFi.localIP());
+
 }
 
 void loop() {
 
-  Serial.begin(115200);
+  if(!client.connect(host, port)){
+    Serial.println("connection to host failed");
+    delay(200);
+    return;
+  }
 
   int s1v = read(sensor1Pin, 3500);
   int s2v = read(sensor2Pin, 3100);

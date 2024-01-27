@@ -2,6 +2,7 @@ import socket
 from time import sleep
 import signal		
 import sys		
+from enum import Enum 
 
 def signal_handler(sig, frame):
     print('Clean-up !')
@@ -14,9 +15,13 @@ def cleanup():
 
 ip = ""     #Enter IP address of laptop after connecting it to WIFI hotspot
 
+class command(Enum):
+    forward = 1
+    stop = 0
+    left = 2
+    right = 4
 
-#We will be sending a simple counter which counts from 1 to 10 and then closes the socket
-counter = 1
+
 
 #To undeerstand the working of the code, visit https://docs.python.org/3/library/socket.html
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -27,7 +32,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     with conn:
         print(f"Connected by {addr}")
         while True:
-            data = conn.recv(1024)
+            data = conn.recv(100) #amount of data 
             print(counter)
             print(data)
             conn.sendall(str.encode(str(counter)))
