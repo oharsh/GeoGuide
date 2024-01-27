@@ -68,6 +68,13 @@ void loop() {
   int s3v = black(sensor3Value, 3500);
   int s4v = black(sensor4Value, 3500);
   int s5v = black(sensor5Value, 3500);
+
+  printInfo(sensor1Value, s1v);
+  printInfo(sensor2Value, s2v);
+  printInfo(sensor3Value, s3v);
+  printInfo(sensor4Value, s4v);
+  printInfo(sensor5Value, s5v);
+  Serial.println("");
   
   if (s2v == HIGH && s3v == HIGH && s4v == HIGH) {
     currentState = DETECT_NODE;
