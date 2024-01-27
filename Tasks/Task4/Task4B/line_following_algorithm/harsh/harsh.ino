@@ -1,9 +1,9 @@
 #include <WiFi.h>
 
-const char* ssid = "espforfun";
+const char* ssid = "MSI";
 const char* pass = "jaimatadi";
 const uint16_t port = 8002; 
-const char* host = "";
+const char* host = "192.168.137.171";
 
 uint16_t leftSpeed = 255;
 uint16_t rightSpeed = 255;
@@ -36,7 +36,7 @@ enum State {
 };
 
 State currentState = FOLLOW_LINE;
-char roadConfiguration[] = "SSRLRRSRSLS"; 
+char roadConfiguration[100] ;
 int currentRoadIndex = 0;
 
 WiFiClient client;
@@ -76,15 +76,16 @@ void setup() {
   Serial.print("connected to: ");
   Serial.println(WiFi.localIP());
 
+  while(!client.connect(host, port)){
+    Serial.println("connection to host failed");
+    delay(200);
+  }
+
+  Serial.println("client connected");
+
 }
 
 void loop() {
-
-  if(!client.connect(host, port)){
-    Serial.println("connection to host failed");
-    delay(200);
-    return;
-  }
 
   int s1v = read(sensor1Pin, 3500);
   int s2v = read(sensor2Pin, 3100);
@@ -92,8 +93,6 @@ void loop() {
   int s4v = read(sensor4Pin, 3500);
   int s5v = read(sensor5Pin, 3500);
 
-  // printCompleteInfo();  // toggle to see verbose
-  
   if (s2v == HIGH && s3v == HIGH && s4v == HIGH) {
     currentState = DETECT_NODE;
   }
@@ -109,58 +108,41 @@ void loop() {
       stop();
       break;
   }
+
 }
 
 void followLine(int s1, int s2, int s3, int s4, int s5) {
-  if (currentRoadIndex == 11){
-    long int start = millis();
-    while (millis() - start < 1000){
-      blackFollow();
-    }
-    stop();
-    digitalWrite(ledPin, HIGH);
-    digitalWrite(buzzer, LOW);
-    delay(5000);
-    digitalWrite(ledPin, LOW);
-    digitalWrite(buzzer, HIGH);
-    while(1){
-      stop();
+
+  if (s3 == HIGH && s2 == LOW && s4 == LOW){
+      forward();
+      delay(turnDelay);
+  }
+  else if (s2 == HIGH || s4 == HIGH){
+    if (s2 == HIGH ^ s4 == HIGH ){
+      if (s2 == HIGH){
+        left();
+        delay(turnDelay);
+      }
+      else {
+        right();
+        delay(turnDelay);
+      }      
     }
   }
   else {
-    if (s3 == HIGH && s2 == LOW && s4 == LOW){
-      forward();
-      delay(turnDelay);
-    }
-    else if (s2 == HIGH || s4 == HIGH){
-      if (s2 == HIGH ^ s4 == HIGH ){
-        if (s2 == HIGH){
-          left();
-          delay(turnDelay);
-        }
-        else {
-          right();
-          delay(turnDelay);
-        }
-
-        
+    if (s1 == HIGH ^ s5 == HIGH){
+      if (s1 == HIGH){
+        right();
+        delay(sideTurnDelay);
+      }
+      else {
+        left();
+        delay(sideTurnDelay);
       }
     }
     else {
-      if (s1 == HIGH ^ s5 == HIGH){
-        if (s1 == HIGH){
-          right();
-          delay(sideTurnDelay);
-        }
-        else {
-          left();
-          delay(sideTurnDelay);
-        }
-      }
-      else {
-        forward();
-        delay(10);
-      }
+      forward();
+      delay(10);
     }
   }  
 }
@@ -171,22 +153,21 @@ void detectNode() {
   switch (currentRoadElement) {
     case 'S':
       Serial.println("Moving forward");
-        stop();
-        digitalWrite(buzzer, LOW);
-        delay(1000);
-        digitalWrite(buzzer, HIGH);
-        forward();
-        delay(400);
+      stop();
+      digitalWrite(buzzer, LOW);
+      delay(1000);
+      digitalWrite(buzzer, HIGH);
+      forward();
+      delay(400);
       break;
     case 'R':
-        Serial.println("Moving Right");
-        stop();
-        digitalWrite(buzzer, LOW);
-        delay(1000);
-        digitalWrite(buzzer, HIGH);
-        right();
-        delay(nodeTurnDelay);
-        // stop();
+      Serial.println("Moving Right");
+      stop();
+      digitalWrite(buzzer, LOW);
+      delay(1000);
+      digitalWrite(buzzer, HIGH);
+      right();
+      delay(nodeTurnDelay);
       break;
     case 'L':
       Serial.println("Moving Left");
@@ -196,7 +177,6 @@ void detectNode() {
       digitalWrite(buzzer, HIGH);
       left();
       delay(nodeTurnDelay);
-      // stop();
       break;
     
   }
@@ -205,31 +185,31 @@ void detectNode() {
 }
 
 void stop() {
-      digitalWrite(leftMotorPin1, LOW);
-      digitalWrite(leftMotorPin2, LOW);
-      digitalWrite(rightMotorPin1, LOW);
-      digitalWrite(rightMotorPin2, LOW);
+  digitalWrite(leftMotorPin1, LOW);
+  digitalWrite(leftMotorPin2, LOW);
+  digitalWrite(rightMotorPin1, LOW);
+  digitalWrite(rightMotorPin2, LOW);
 }
 
 void left(){
-      digitalWrite(leftMotorPin1, LOW);
-      digitalWrite(leftMotorPin2, LOW);
-      digitalWrite(rightMotorPin1, HIGH);
-      digitalWrite(rightMotorPin2, LOW);
+  digitalWrite(leftMotorPin1, LOW);
+  digitalWrite(leftMotorPin2, LOW);
+  digitalWrite(rightMotorPin1, HIGH);
+  digitalWrite(rightMotorPin2, LOW);
 }
 
 void right(){
-        digitalWrite(leftMotorPin1, HIGH);
-        digitalWrite(leftMotorPin2, LOW);
-        digitalWrite(rightMotorPin1, LOW);
-        digitalWrite(rightMotorPin2, LOW);
+  digitalWrite(leftMotorPin1, HIGH);
+  digitalWrite(leftMotorPin2, LOW);
+  digitalWrite(rightMotorPin1, LOW);
+  digitalWrite(rightMotorPin2, LOW);
 }
 
 void forward(){
-        digitalWrite(leftMotorPin1, HIGH);
-        digitalWrite(leftMotorPin2, LOW);
-        digitalWrite(rightMotorPin1, HIGH);
-        digitalWrite(rightMotorPin2, LOW);
+  digitalWrite(leftMotorPin1, HIGH);
+  digitalWrite(leftMotorPin2, LOW);
+  digitalWrite(rightMotorPin1, HIGH);
+  digitalWrite(rightMotorPin2, LOW);
 }
 
 int black(int val, int test){
@@ -252,7 +232,7 @@ void printInfo(int analog, int digital = 0){
 }
 
 void blackFollow(){
-  // int sensor1Value = analogRead(sensor1Pin);
+
   int s2 = analogRead(sensor2Pin);
   int s3 = analogRead(sensor3Pin);
   int s4 = analogRead(sensor4Pin);
@@ -310,3 +290,19 @@ void printCompleteInfo(){
   Serial.println("");
 
 }
+
+// if (currentRoadIndex == 11){
+//     long int start = millis();
+//     while (millis() - start < 1000){
+//       blackFollow();
+//     }
+//     stop();
+//     digitalWrite(ledPin, HIGH);
+//     digitalWrite(buzzer, LOW);
+//     delay(5000);
+//     digitalWrite(ledPin, LOW);
+//     digitalWrite(buzzer, HIGH);
+//     while(1){
+//       stop();
+//     }
+//   }

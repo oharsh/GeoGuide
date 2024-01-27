@@ -20,7 +20,7 @@ class command(Enum):
     stop = 0
     left = 2
     right = 4
-
+print (command.list)
 
 
 #To undeerstand the working of the code, visit https://docs.python.org/3/library/socket.html
@@ -33,8 +33,6 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         print(f"Connected by {addr}")
         while True:
             data = conn.recv(100) #amount of data 
-            print(counter)
-            print(data)
             conn.sendall(str.encode(str(counter)))
             counter += 1
             sleep(1)
