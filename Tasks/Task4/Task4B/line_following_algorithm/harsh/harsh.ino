@@ -1,9 +1,9 @@
 uint16_t leftSpeed = 255;
 uint16_t rightSpeed = 255;
 
-const uint16_t dturn = 970;  //1200 //970
+const uint16_t nodeTurnDelay = 970;  //1200 //970
 const uint16_t turnDelay = 20;
-const uint16_t sideTurnDelay = 20;
+const uint16_t sideTurnDelay = 40;
 
 int sensor1Pin = 33;  
 int sensor2Pin = 32; 
@@ -58,24 +58,13 @@ void loop() {
 
   Serial.begin(115200);
 
-  int sensor1Value = analogRead(sensor1Pin);
-  int sensor2Value = analogRead(sensor2Pin);
-  int sensor3Value = analogRead(sensor3Pin);
-  int sensor4Value = analogRead(sensor4Pin);
-  int sensor5Value = analogRead(sensor5Pin);
+  int s1v = read(sensor1Pin, 3500);
+  int s2v = read(sensor2Pin, 3100);
+  int s3v = read(sensor3Pin, 3500);
+  int s4v = read(sensor4Pin, 3500);
+  int s5v = read(sensor5Pin, 3500);
 
-  int s1v = black(sensor1Value, 3500);
-  int s2v = black(sensor2Value, 3100);
-  int s3v = black(sensor3Value, 3500);
-  int s4v = black(sensor4Value, 3500);
-  int s5v = black(sensor5Value, 3500);
-
-  printInfo(sensor1Value, s1v);
-  printInfo(sensor2Value, s2v);
-  printInfo(sensor3Value, s3v);
-  printInfo(sensor4Value, s4v);
-  printInfo(sensor5Value, s5v);
-  Serial.println("");
+  // printCompleteInfo();  // toggle to see verbose
   
   if (s2v == HIGH && s3v == HIGH && s4v == HIGH) {
     currentState = DETECT_NODE;
@@ -168,7 +157,7 @@ void detectNode() {
         delay(1000);
         digitalWrite(buzzer, HIGH);
         right();
-        delay(dturn);
+        delay(nodeTurnDelay);
         // stop();
       break;
     case 'L':
@@ -178,7 +167,7 @@ void detectNode() {
       delay(1000);
       digitalWrite(buzzer, HIGH);
       left();
-      delay(dturn);
+      delay(nodeTurnDelay);
       // stop();
       break;
     
@@ -227,7 +216,7 @@ void setMotorSpeeds(int leftSpeed, int rightSpeed) {
   analogWrite(enb, rightSpeed);
 }
 
-void printInfo(int analog, int digital){
+void printInfo(int analog, int digital = 0){
   Serial.print(analog);  
   Serial.print(" ");
   Serial.print(digital);
@@ -268,5 +257,28 @@ int read(int pin, int ref){
   int final = analogRead(pin);
   final = black(final, ref);
   return final;
+
+}
+
+void printCompleteInfo(){
+
+  int sensor1Value = analogRead(sensor1Pin);
+  int sensor2Value = analogRead(sensor2Pin);
+  int sensor3Value = analogRead(sensor3Pin);
+  int sensor4Value = analogRead(sensor4Pin);
+  int sensor5Value = analogRead(sensor5Pin);
+
+  int s1v = black(sensor1Value, 3500);
+  int s2v = black(sensor2Value, 3100);
+  int s3v = black(sensor3Value, 3500);
+  int s4v = black(sensor4Value, 3500);
+  int s5v = black(sensor5Value, 3500);
+
+  printInfo(sensor1Value, s1v);
+  printInfo(sensor2Value, s2v);
+  printInfo(sensor3Value, s3v);
+  printInfo(sensor4Value, s4v);
+  printInfo(sensor5Value, s5v);
+  Serial.println("");
 
 }
