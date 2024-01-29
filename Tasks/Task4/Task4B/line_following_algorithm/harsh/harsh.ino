@@ -1,4 +1,5 @@
 #include <WiFi.h>
+#include <string.h>
 
 const char* ssid = "MSI";
 const char* pass = "jaimatadi";
@@ -36,11 +37,13 @@ enum State {
 };
 
 State currentState = FOLLOW_LINE;
-char roadConfiguration[100] ;
+String roadConfiguration ;
+String msg ;
 int currentRoadIndex = 0;
+bool ready = true;
+String emergency = "E";
 
 WiFiClient client;
-String msg ;
 int command ;
 
 void setup() {
@@ -48,7 +51,7 @@ void setup() {
   delay(5000);
 
   Serial.begin(115200);
-  while(!Serial){delay(100);}
+  // while(!Serial){delay(100);}
 
   pinMode(leftMotorPin1, OUTPUT);
   pinMode(leftMotorPin2, OUTPUT);
@@ -68,7 +71,7 @@ void setup() {
 
   WiFi.begin(ssid, pass);
 
-  while(!WiFi.status() != WL_CONNECTED){
+  while(WiFi.status() != WL_CONNECTED){
     delay(500);
     Serial.println("...");
   }
@@ -77,12 +80,16 @@ void setup() {
   Serial.println(WiFi.localIP());
 
   while(!client.connect(host, port)){
-    Serial.println("connection to host failed");
-    delay(200);
+    Serial.println("no connection");
+    delay(500);
+  };
+  Serial.println("connection established");
+  while(!client.available()){
+    delay(50);
   }
-
-  Serial.println("client connected");
-
+  roadConfiguration = client.readStringUntil('\n');
+  Serial.println("new road config obtained");
+  Serial.println(roadConfiguration);
 }
 
 void loop() {
@@ -93,7 +100,25 @@ void loop() {
   int s4v = read(sensor4Pin, 3500);
   int s5v = read(sensor5Pin, 3500);
 
-  if (s2v == HIGH && s3v == HIGH && s4v == HIGH) {
+  if (roadConfiguration.isEmpty()){
+    client.print("ready");
+    while(!client.available()){
+      int s1v = read(sensor1Pin, 3500);
+      int s2v = read(sensor2Pin, 3100);
+      int s3v = read(sensor3Pin, 3500);
+      int s4v = read(sensor4Pin, 3500);
+      int s5v = read(sensor5Pin, 3500);       
+      followLine(s1v, s2v, s3v, s4v, s5v);
+    }
+    stop();
+    delay(1000);
+    client.flush();
+    client.println("send");
+    roadConfiguration = client.readStringUntil('\n');
+    return;
+  }
+
+  if (s2v == HIGH && s3v == HIGH && s4v == HIGH){ 
     currentState = DETECT_NODE;
   }
 
@@ -106,6 +131,7 @@ void loop() {
       break;
     case STOP:
       stop();
+      delay(1000);
       break;
   }
 
@@ -149,7 +175,7 @@ void followLine(int s1, int s2, int s3, int s4, int s5) {
 
 
 void detectNode() {
-  char currentRoadElement = roadConfiguration[currentRoadIndex];
+  char currentRoadElement = roadConfiguration[0];
   switch (currentRoadElement) {
     case 'S':
       Serial.println("Moving forward");
@@ -180,7 +206,9 @@ void detectNode() {
       break;
     
   }
-  currentRoadIndex++;
+  roadConfiguration.remove(0,1);
+  Serial.println("this is the remaining path");
+  Serial.println(roadConfiguration);
   currentState = FOLLOW_LINE;
 }
 
@@ -290,6 +318,16 @@ void printCompleteInfo(){
   Serial.println("");
 
 }
+
+// bool nodeDetect(){
+//   int s2v = read(sensor2Pin, 3100);
+//   int s3v = read(sensor3Pin, 3500);
+//   int s4v = read(sensor4Pin, 3500);
+//   if (s2v == HIGH && s3v == HIGH && s4v == HIGH)
+//     return true;
+//   else
+//     return false;
+// }
 
 // if (currentRoadIndex == 11){
 //     long int start = millis();
