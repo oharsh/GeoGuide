@@ -36,6 +36,16 @@ enum State {
   STOP
 };
 
+struct sense{
+  int s1;
+  int s2;
+  int s3;
+  int s4;
+  int s5;
+};
+
+sense sensor;
+
 State currentState = FOLLOW_LINE;
 String roadConfiguration ;
 String msg ;
@@ -298,11 +308,7 @@ int read(int pin, int ref){
 
 void printCompleteInfo(){
 
-  int sensor1Value = analogRead(sensor1Pin);
-  int sensor2Value = analogRead(sensor2Pin);
-  int sensor3Value = analogRead(sensor3Pin);
-  int sensor4Value = analogRead(sensor4Pin);
-  int sensor5Value = analogRead(sensor5Pin);
+  readings = sensorReading()
 
   int s1v = black(sensor1Value, 3500);
   int s2v = black(sensor2Value, 3100);
@@ -317,6 +323,17 @@ void printCompleteInfo(){
   printInfo(sensor5Value, s5v);
   Serial.println("");
 
+}
+
+sense sensorsReading(){
+  sense sensors;
+  sensors.s1 = read(sensor1Pin, );
+  sensors.s2 = read(sensor2Pin, );
+  sensors.s3 = read(sensor3Pin, );
+  sensors.s4 = read(sensor4Pin, );
+  sensors.s5 = read(sensor5Pin, );
+
+  return sensors;
 }
 
 // bool nodeDetect(){
