@@ -3,28 +3,28 @@
 
 const char* ssid = "MSI";
 const char* pass = "jaimatadi";
-const uint16_t port = 8002; 
-const char* host = "192.168.137.171";
+const uint16_t port = 8002;
+const char* host = "192.168.137.50";
 
 uint16_t leftSpeed = 255;
 uint16_t rightSpeed = 255;
 
-const uint16_t nodeTurnDelay = 970;  //1200 //970
+const uint16_t nodeTurnDelay = 970; //970
 const uint16_t turnDelay = 20;
 const uint16_t sideTurnDelay = 40;
 
-int sensor1Pin = 33;  
-int sensor2Pin = 32; 
-int sensor3Pin = 35; 
-int sensor4Pin = 34;  
-int sensor5Pin = 4;  //25
+int sensor1Pin = 33;
+int sensor2Pin = 32;
+int sensor3Pin = 35;
+int sensor4Pin = 34;
+int sensor5Pin = 4;  
 
 int leftMotorPin1 = 12;
 int leftMotorPin2 = 14;
 int rightMotorPin1 = 27;
 int rightMotorPin2 = 26;
 
-const uint16_t ena = 13; //4
+const uint16_t ena = 13;  
 const uint16_t enb = 25;
 
 int ledPin = 5;
@@ -36,7 +36,7 @@ enum State {
   STOP
 };
 
-struct sense{
+struct sense {
   int s1;
   int s2;
   int s3;
@@ -44,22 +44,24 @@ struct sense{
   int s5;
 };
 
+//flags
+// bool uTurnFlag = false;
+
 sense sensor;
 
 State currentState = FOLLOW_LINE;
-String roadConfiguration ;
-String msg ;
+String roadConfiguration;
 int currentRoadIndex = 0;
 bool ready = true;
 String emergency = "E";
 
 WiFiClient client;
-int command ;
 
 void setup() {
 
-  delay(5000);
+  WiFi.begin(ssid, pass);
 
+  delay(5000);
   Serial.begin(115200);
   // while(!Serial){delay(100);}
 
@@ -79,22 +81,21 @@ void setup() {
   digitalWrite(ledPin, LOW);
   digitalWrite(buzzer, HIGH);
 
-  WiFi.begin(ssid, pass);
 
-  while(WiFi.status() != WL_CONNECTED){
+  while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.println("...");
   }
 
-  Serial.print("connected to: ");
+  Serial.print("connected with ip: ");
   Serial.println(WiFi.localIP());
 
-  while(!client.connect(host, port)){
+  while (!client.connect(host, port)) {
     Serial.println("no connection");
     delay(500);
   };
   Serial.println("connection established");
-  while(!client.available()){
+  while (!client.available()) {
     delay(50);
   }
   roadConfiguration = client.readStringUntil('\n');
@@ -103,38 +104,35 @@ void setup() {
 }
 
 void loop() {
+  sensor = sensorsReading();
 
-  int s1v = read(sensor1Pin, 3500);
-  int s2v = read(sensor2Pin, 3100);
-  int s3v = read(sensor3Pin, 3500);
-  int s4v = read(sensor4Pin, 3500);
-  int s5v = read(sensor5Pin, 3500);
-
-  if (roadConfiguration.isEmpty()){
+  if (roadConfiguration.isEmpty()) {
     client.print("ready");
-    while(!client.available()){
-      int s1v = read(sensor1Pin, 3500);
-      int s2v = read(sensor2Pin, 3100);
-      int s3v = read(sensor3Pin, 3500);
-      int s4v = read(sensor4Pin, 3500);
-      int s5v = read(sensor5Pin, 3500);       
-      followLine(s1v, s2v, s3v, s4v, s5v);
+    while (!client.available()) {
+      sensor = sensorsReading();
+      followLine(sensor.s1, sensor.s2, sensor.s3, sensor.s4, sensor.s5);
     }
     stop();
     delay(1000);
     client.flush();
     client.println("send");
     roadConfiguration = client.readStringUntil('\n');
+    if (roadConfiguration[0] == 'U'){
+      stop();
+      uTurn();
+      delay(500);
+    }
+    roadConfiguration.remove(0,1);
     return;
   }
 
-  if (s2v == HIGH && s3v == HIGH && s4v == HIGH){ 
+  if (sensor.s2 == HIGH && sensor.s3 == HIGH && sensor.s4 == HIGH) {
     currentState = DETECT_NODE;
   }
 
   switch (currentState) {
     case FOLLOW_LINE:
-      followLine(s1v, s2v, s3v, s4v, s5v);
+      followLine(sensor.s1, sensor.s2, sensor.s3, sensor.s4, sensor.s5);
       break;
     case DETECT_NODE:
       detectNode();
@@ -144,43 +142,41 @@ void loop() {
       delay(1000);
       break;
   }
-
 }
 
 void followLine(int s1, int s2, int s3, int s4, int s5) {
 
-  if (s3 == HIGH && s2 == LOW && s4 == LOW){
-      forward();
-      delay(turnDelay);
-  }
-  else if (s2 == HIGH || s4 == HIGH){
-    if (s2 == HIGH ^ s4 == HIGH ){
-      if (s2 == HIGH){
+  if (s3 == HIGH && s2 == LOW && s4 == LOW) {
+    forward();
+    delay(turnDelay);
+  } 
+  else if (s2 == HIGH || s4 == HIGH) {
+    if (s2 == HIGH ^ s4 == HIGH) {
+      if (s2 == HIGH) {
         left();
         delay(turnDelay);
-      }
+      } 
       else {
         right();
         delay(turnDelay);
-      }      
+      }
     }
-  }
+  } 
   else {
-    if (s1 == HIGH ^ s5 == HIGH){
-      if (s1 == HIGH){
+    if (s1 == HIGH ^ s5 == HIGH) {
+      if (s1 == HIGH) {
         right();
         delay(sideTurnDelay);
-      }
-      else {
+      } else {
         left();
         delay(sideTurnDelay);
       }
-    }
+    } 
     else {
       forward();
       delay(10);
     }
-  }  
+  }
 }
 
 
@@ -216,10 +212,16 @@ void detectNode() {
       break;
     
   }
-  roadConfiguration.remove(0,1);
-  Serial.println("this is the remaining path");
+  roadConfiguration.remove(0, 1);
+  if (!roadConfiguration.isEmpty()){
+  Serial.print("Remaining Path:");
   Serial.println(roadConfiguration);
+  }
+  else {
+    Serial.print("Path Finished");
+  }
   currentState = FOLLOW_LINE;
+  
 }
 
 void stop() {
@@ -229,32 +231,32 @@ void stop() {
   digitalWrite(rightMotorPin2, LOW);
 }
 
-void left(){
+void left() {
   digitalWrite(leftMotorPin1, LOW);
   digitalWrite(leftMotorPin2, LOW);
   digitalWrite(rightMotorPin1, HIGH);
   digitalWrite(rightMotorPin2, LOW);
 }
 
-void right(){
+void right() {
   digitalWrite(leftMotorPin1, HIGH);
   digitalWrite(leftMotorPin2, LOW);
   digitalWrite(rightMotorPin1, LOW);
   digitalWrite(rightMotorPin2, LOW);
 }
 
-void forward(){
+void forward() {
   digitalWrite(leftMotorPin1, HIGH);
   digitalWrite(leftMotorPin2, LOW);
   digitalWrite(rightMotorPin1, HIGH);
   digitalWrite(rightMotorPin2, LOW);
 }
 
-int black(int val, int test){
-  if (val > test){
-    return 1;
-  }
-    return 0;
+void uTurn(){
+  digitalWrite(leftMotorPin1, HIGH);
+  digitalWrite(leftMotorPin2, LOW);
+  digitalWrite(rightMotorPin1, LOW);
+  digitalWrite(rightMotorPin2, HIGH);
 }
 
 void setMotorSpeeds(int leftSpeed, int rightSpeed) {
@@ -262,14 +264,14 @@ void setMotorSpeeds(int leftSpeed, int rightSpeed) {
   analogWrite(enb, rightSpeed);
 }
 
-void printInfo(int analog, int digital = 0){
-  Serial.print(analog);  
+void printInfo(int analog, int digital = 0) {
+  Serial.print(analog);
   Serial.print(" ");
   Serial.print(digital);
   Serial.print("  ");
 }
 
-void blackFollow(){
+void blackFollow() {
 
   int s2 = analogRead(sensor2Pin);
   int s3 = analogRead(sensor3Pin);
@@ -280,61 +282,62 @@ void blackFollow(){
   s4 = black(s4, 3500);
 
 
-  if (s3 == HIGH && s2 == LOW && s4 == LOW){
-      forward();
-      delay(turnDelay);
-    }
-    else if (s2 == HIGH || s4 == HIGH){
-      if (s2 == HIGH ^ s4 == HIGH ){
-        if (s2 == HIGH){
-          left();
-          delay(turnDelay);
-        }
-        else {
-          right();
-          delay(turnDelay);
-        }
+  if (s3 == HIGH && s2 == LOW && s4 == LOW) {
+    forward();
+    delay(turnDelay);
+  } else if (s2 == HIGH || s4 == HIGH) {
+    if (s2 == HIGH ^ s4 == HIGH) {
+      if (s2 == HIGH) {
+        left();
+        delay(turnDelay);
+      } else {
+        right();
+        delay(turnDelay);
       }
     }
+  }
 }
 
-int read(int pin, int ref){
-
-  int final = analogRead(pin);
-  final = black(final, ref);
-  return final;
-
+int black(int val, int test) {
+  if (val > test) {
+    return 1;
+  }
+  return 0;
 }
 
-void printCompleteInfo(){
-
-  readings = sensorReading()
-
-  int s1v = black(sensor1Value, 3500);
-  int s2v = black(sensor2Value, 3100);
-  int s3v = black(sensor3Value, 3500);
-  int s4v = black(sensor4Value, 3500);
-  int s5v = black(sensor5Value, 3500);
-
-  printInfo(sensor1Value, s1v);
-  printInfo(sensor2Value, s2v);
-  printInfo(sensor3Value, s3v);
-  printInfo(sensor4Value, s4v);
-  printInfo(sensor5Value, s5v);
-  Serial.println("");
-
+int read(int pin, int ref = 0) {
+  if (ref == 0) {
+    int final = analogRead(pin);
+    return final;
+  }
+  else {
+    int final = analogRead(pin);
+    final = black(final, ref);
+    return final;
+  }
 }
 
-sense sensorsReading(){
+sense sensorsReading() {
   sense sensors;
-  sensors.s1 = read(sensor1Pin, );
-  sensors.s2 = read(sensor2Pin, );
-  sensors.s3 = read(sensor3Pin, );
-  sensors.s4 = read(sensor4Pin, );
-  sensors.s5 = read(sensor5Pin, );
-
+  sensors.s1 = read(sensor1Pin, 3500);
+  sensors.s2 = read(sensor2Pin, 3100);
+  sensors.s3 = read(sensor3Pin, 3500);
+  sensors.s4 = read(sensor4Pin, 3500);
+  sensors.s5 = read(sensor5Pin, 3500);
   return sensors;
 }
+
+
+void printCompleteInfo(sense var) {
+
+  printInfo(analogRead(sensor1Pin), var.s1);
+  printInfo(analogRead(sensor2Pin), var.s2);
+  printInfo(analogRead(sensor3Pin), var.s3);
+  printInfo(analogRead(sensor4Pin), var.s4);
+  printInfo(analogRead(sensor5Pin), var.s5);
+
+}
+
 
 // bool nodeDetect(){
 //   int s2v = read(sensor2Pin, 3100);
@@ -352,8 +355,8 @@ sense sensorsReading(){
 //       blackFollow();
 //     }
 //     stop();
-//     digitalWrite(ledPin, HIGH);
-//     digitalWrite(buzzer, LOW);
+//     digitalWrite(lesssdPin, HIGH);
+//     digitalWrite(bussszzer, LOW);
 //     delay(5000);
 //     digitalWrite(ledPin, LOW);
 //     digitalWrite(buzzer, HIGH);
