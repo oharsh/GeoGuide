@@ -3,7 +3,7 @@ from cv2 import aruco
 import numpy as np
 
 # load in the calibration data
-calib_data_path = "MultiMatrix.npz"
+calib_data_path = "/home/deadmonk/Desktop/eyrc23_GG_1667/Tasks/Task4/Task4B/track/MultiMatrix.npz"
 
 calib_data = np.load(calib_data_path)
 print(calib_data.files)
@@ -13,13 +13,13 @@ dist_coef = calib_data["distCoef"]
 r_vectors = calib_data["rVector"]
 t_vectors = calib_data["tVector"]
 
-MARKER_SIZE = 6  # centimeters (measure your printed marker size)
+MARKER_SIZE = 8  # centimeters (measure your printed marker size)
 
 marker_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_250)
 
 param_markers = aruco.DetectorParameters()
 
-cap = cv.VideoCapture(0)
+cap = cv.VideoCapture(2)
 
 while True:
     ret, frame = cap.read()
@@ -48,11 +48,11 @@ while True:
             
             # Draw the pose of the marker
             point = cv.drawFrameAxes(frame, cam_mat, dist_coef, rVec[i], tVec[i], 4, 4)
-            cv.putText(frame, f"id: {ids[0]} Dist: {round(distance, 2)}", top_right, cv.FONT_HERSHEY_PLAIN, 1.3, (0, 0, 255), 2, cv.LINE_AA,)
-            cv.putText(frame, f"x:{round(tVec[i][0][0],1)} y: {round(tVec[i][0][1],1)} ", bottom_right, cv.FONT_HERSHEY_PLAIN, 1.0, (0, 0, 255), 2, cv.LINE_AA,)
+            # cv.putText(frame, f"id: {ids[0]} Dist: {round(distance, 2)}", top_right, cv.FONT_HERSHEY_PLAIN, 1.3, (0, 0, 255), 2, cv.LINE_AA,)
+            cv.putText(frame, f"{round(tVec[i][0][0],1)}, {round(tVec[i][0][1],1)} ", bottom_right, cv.FONT_HERSHEY_PLAIN, 1.0, (0, 0, 255), 2, cv.LINE_AA,)
             # print(ids, "  ", corners)
     cv.namedWindow('frame', cv.WINDOW_NORMAL)
-    cv.resizeWindow('frame', 960, 1080)
+    cv.resizeWindow('frame', 1080, 720)  
     cv.imshow("frame", frame)
     key = cv.waitKey(1)
     if key == ord("q"):

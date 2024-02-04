@@ -6,7 +6,7 @@ Chess_Board_Dimensions = (8, 5)
 n = 0  # image counter
 
 # checks images dir is exist or not
-image_path = "images"
+image_path = "image"
 
 Dir_Check = os.path.isdir(image_path)
 

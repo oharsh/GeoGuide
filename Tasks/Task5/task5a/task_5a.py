@@ -126,21 +126,21 @@ def task_4a_return():
     event_locator(arena)
     classification(coordinate_list, arena)
     
-    for i in range(5):
+    for i in range(len(detected_list)):
         if (detected_list[i] == 'fire'):
             new_label = chr(ord('A') + i)
             new_value = str(detected_list[i])
             identified_labels[new_label] = new_value
         
             
-    for i in range(5):
+    for i in range(len(detected_list)):
         if(detected_list[i] == 'destroyed_buildings'):
             new_label = chr(ord('A') + i)
             new_value = str(detected_list[i])
             identified_labels[new_label] = new_value
             
 
-    for i in range(5):
+    for i in range(len(detected_list)):
         if (detected_list[i] == 'human_aid_rehabilitation'):
             new_label = chr(ord('A') + i)
             new_value = str(detected_list[i])
@@ -148,14 +148,14 @@ def task_4a_return():
 
             
         
-    for i in range(5):
+    for i in range(len(detected_list)):
         if (detected_list[i] == 'military_vehicles'):
             new_label = chr(ord('A') + i)
             new_value = str(detected_list[i])
             identified_labels[new_label] = new_value
             
         
-    for i in range(5):
+    for i in range(len(detected_list)):
         if (detected_list[i] == 'combat'):
             new_label = chr(ord('A') + i)
             new_value = str(detected_list[i])

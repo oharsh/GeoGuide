@@ -30,6 +30,8 @@ const uint16_t enb = 25;
 int ledPin = 5;
 int buzzer = 15;
 
+char head;
+
 enum State {
   FOLLOW_LINE,
   DETECT_NODE,
@@ -105,6 +107,20 @@ void setup() {
 
 void loop() {
   sensor = sensorsReading();
+
+  if(roadConfiguration[0] == 'I'){
+    roadConfiguration.remove(0, 1)
+  }
+  
+  else if(roadConfiguration[0] == "T"){
+
+
+  }
+
+  else if(roadConfiguration[0] == "F"){
+
+
+  }
 
   if (roadConfiguration.isEmpty()) {
     client.print("ready");
@@ -213,9 +229,10 @@ void detectNode() {
     
   }
   roadConfiguration.remove(0, 1);
-  if (!roadConfiguration.isEmpty()){
-  Serial.print("Remaining Path:");
-  Serial.println(roadConfiguration);
+ 
+  if(!roadConfiguration.isEmpty()){
+    Serial.print("remaining path:");
+    Serial.print(roadConfiguration);
   }
   else {
     Serial.print("Path Finished");
