@@ -9,7 +9,7 @@ marker_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_250)
 param_markers = aruco.DetectorParameters()
 
 # utilizes default camera/webcam driver
-cap = cv.VideoCapture(0)
+cap = cv.VideoCapture(2)
 
 # iterate through multiple frames, in a live video feed
 while True:
@@ -30,10 +30,10 @@ while True:
             bottom_right = corners[2].ravel()
             bottom_left = corners[3].ravel()
 
-            cv.putText(frame, f"id: {ids[0]}", top_right, cv.FONT_HERSHEY_PLAIN, 1.3, (200, 100, 0), 2, cv.LINE_AA, )
+            # cv.putText(frame, f"id: {ids[0]}", top_right, cv.FONT_HERSHEY_PLAIN, 1.3, (200, 100, 0), 2, cv.LINE_AA, )
             # print(ids, "  ", corners)
     cv.namedWindow('frame', cv.WINDOW_NORMAL)
-    cv.resizeWindow('frame', 1920, 1080)
+    cv.resizeWindow('frame', 1080, 720)
     cv.imshow("frame", frame)
     key = cv.waitKey(1)
     if key == ord("q"):

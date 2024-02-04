@@ -11,7 +11,7 @@ SQUARE_SIZE = 29  # millimeters
 criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001)
 
 
-calib_data_path = "C:\\Users\\abhi9\\Desktop\\Aruco detection"
+calib_data_path = "/home/deadmonk/Desktop/eyrc23_GG_1667/"
 CHECK_DIR = os.path.isdir(calib_data_path)
 
 

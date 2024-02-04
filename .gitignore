@@ -15,3 +15,9 @@ tempCodeRunnerFile.*
 *.csv
 README
 environment
+images
+*.npz
+temp*.py
+*.jpg
+*.png
+
