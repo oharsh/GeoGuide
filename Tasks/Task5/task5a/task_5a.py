@@ -45,7 +45,8 @@ from tensorflow.keras.preprocessing import image
 You are allowed to add any number of functions to this code.
 """
 
-arena_path = "captured_frame.jpg"
+# arena_path = "captured_frame.jpg"
+arena_path = "C:/Users/hp/2image_Arena/2024-02-04-012340.jpg"
 event_list = []
 detected_list = []
 coordinate_list = []
@@ -55,38 +56,39 @@ rehab = "humanitarianaid"
 military_vehicles = "militaryvehicles"
 fire = "fire"
 destroyed_building = "destroyedbuilding"
+numbers = 'numbers'
 
-cap = cv.VideoCapture(2)
+#cap = cv.VideoCapture(0)
 
 def arena_image(arena_path):   
-    while True:
-        # Capture frame-by-frame
-        ret, frame = cap.read()
+    # while True:
+    #     # Capture frame-by-frame
+    #     ret, frame = cap.read()
     
-        # Check if the frame was captured successfully
-        if not ret:
-            print("Error: Failed to capture frame")
-            break
+    #     # Check if the frame was captured successfully
+    #     if not ret:
+    #         print("Error: Failed to capture frame")
+    #         break
     
-        # Display the frame
-        cv.namedWindow("Live Feed", cv.WINDOW_NORMAL)
-        cv.resizeWindow("Live Feed", 490, 490)
-        cv.imshow('Live Feed', frame)
+    #     # Display the frame
+    #     cv.namedWindow("Live Feed", cv.WINDOW_NORMAL)
+    #     cv.resizeWindow("Live Feed", 490, 490)
+    #     cv.imshow('Live Feed', frame)
     
-        # Save the frame to an image file (change the file name as needed)
-        cv.imwrite(arena_path, frame)
+    #     # Save the frame to an image file (change the file name as needed)
+    #     cv.imwrite('captured_frame.jpg', frame)
 
-        if cv.waitKey(1) & 0xFF == ord('q'):
-            break
+    #     if cv.waitKey(1) & 0xFF == ord('q'):
+    #         break
     
-    cap.release()
-    cv.destroyAllWindows()
+    # cap.release()
+    # cv.destroyAllWindows()
     frame = cv.imread(arena_path)
     
     y=0
-    x=100
-    h=500
-    w=475
+    x=400
+    h=1100
+    w=1100
     cropped = frame[y:y+h, x:x+w]
     arena = cv.resize(cropped, (700, 700))
     return arena 
@@ -94,7 +96,7 @@ def arena_image(arena_path):
 def event_identification(arena): 
     gray = cv.cvtColor(arena, cv.COLOR_BGR2GRAY)
    
-    _, thresholded = cv.threshold(gray, 180, 255, cv.THRESH_BINARY)
+    _, thresholded = cv.threshold(gray, 200, 255, cv.THRESH_BINARY)
 
     contours, _ = cv.findContours(thresholded, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
     area_threshold = 800
@@ -120,7 +122,7 @@ def event_identification(arena):
 
 def classify_event(image_path):
     
-    model = keras.models.load_model("C:/Users/hp/object_classification.h5")
+    model = keras.models.load_model("C:/Users/hp/object_classification_Final.h5")
     
     img=image.load_img(image_path,target_size=(224,224))
     x=image.img_to_array(img)
@@ -128,7 +130,7 @@ def classify_event(image_path):
     img_data=preprocess_input(x)
     a=np.argmax(model.predict(img_data), axis=1)[0]
     
-    event_names = ['combat', 'human_aid_rehabilitation', 'military_vehicles', 'fire', 'destroyed_buildings'] 
+    event_names = ['combat', 'human_aid_rehabilitation', 'military_vehicles', 'fire', 'destroyed_buildings', 'numbers'] 
     event = event_names[a]
 
     return event
@@ -161,9 +163,35 @@ def task_4a_return():
     arena = arena_image(arena_path)
     event_identification(arena)
     classification(coordinate_list, arena)
-    identified_labels = {"A": str(detected_list[0]), "B": str(detected_list[1]), 
-                         "C": str(detected_list[2]), "D": str(detected_list[3]), 
-                         "E": str(detected_list[4])}
+    
+    if (detected_list[0] != 'numbers'):
+        new_label = "A"
+        new_value = str(detected_list[0])  
+        identified_labels[new_label] = new_value
+        
+    if (detected_list[1] != 'numbers'):
+        new_label = "B"
+        new_value = str(detected_list[1])
+        identified_labels[new_label] = new_value
+        
+    if (detected_list[2] != 'numbers'):
+        new_label = "C"
+        new_value = str(detected_list[2])
+        identified_labels[new_label] = new_value
+        
+    if (detected_list[3] != 'numbers'):
+        new_label = "D"
+        new_value = str(detected_list[3])
+        identified_labels[new_label] = new_value
+        
+    if (detected_list[4] != 'numbers'):
+        new_label = "E"
+        new_value = str(detected_list[4])
+        identified_labels[new_label] = new_value
+
+    # identified_labels = {"A": str(detected_list[0]), "B": str(detected_list[1]), 
+    #                      "C": str(detected_list[2]), "D": str(detected_list[3]), 
+    #                      "E": str(detected_list[4])}
 
     return identified_labels
 
