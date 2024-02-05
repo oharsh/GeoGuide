@@ -22,5 +22,6 @@ temp*.py
 *.png
 *.jpeg
 *.h5
+temp.*
 
 
