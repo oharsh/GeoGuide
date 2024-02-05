@@ -20,7 +20,7 @@ marker_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_250)
 
 param_markers = aruco.DetectorParameters()
 
-cap = cv.VideoCapture(0)
+cap = cv.VideoCapture(2)
 
 #######Read the lat_long.csv file#########
 lat_lon ={}

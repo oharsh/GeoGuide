@@ -20,4 +20,8 @@ images
 temp*.py
 *.jpg
 *.png
+*.jpeg
+*.h5
+temp.*
+
 

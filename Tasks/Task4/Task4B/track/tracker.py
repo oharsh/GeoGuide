@@ -5,7 +5,7 @@ import csv
 import math
 import os
 
-calib_data_path = "MultiMatrix.npz"
+calib_data_path = "/home/deadmonk/Desktop/eyrc23_GG_1667/Environment/camCal/MultiMatrix.npz"
 
 calib_data = np.load(calib_data_path)
 
@@ -68,63 +68,72 @@ def calculate_distance(x1, y1, x2, y2):
 
 
 
+def main():
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
+        gray_frame = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
+        marker_corners, marker_IDs, reject = aruco.detectMarkers(gray_frame, marker_dict, parameters=param_markers)
 
-while True:
-    ret, frame = cap.read()
-    if not ret:
-        break
-    gray_frame = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
-    marker_corners, marker_IDs, reject = aruco.detectMarkers(gray_frame, marker_dict, parameters=param_markers)
+        # print(marker_IDs)
 
-    print(marker_IDs)
+        if marker_corners:
 
-    if marker_corners:
+            rVec, tVec, _ = aruco.estimatePoseSingleMarkers(marker_corners, MARKER_SIZE, cam_mat, dist_coef)
+            total_markers = range(0, marker_IDs.size)
 
-        rVec, tVec, _ = aruco.estimatePoseSingleMarkers(marker_corners, MARKER_SIZE, cam_mat, dist_coef)
-        total_markers = range(0, marker_IDs.size)
+            # Find the index of the ArUco marker with ID '1'
+            marker_1_index = np.where(marker_IDs == 1)[0]
 
-        # Find the index of the ArUco marker with ID '1'
-        marker_1_index = np.where(marker_IDs == 1)[0]
+            if len(marker_1_index) > 0:
+                marker_1_pose = tVec[marker_1_index][0]
 
-        if len(marker_1_index) > 0:
-            marker_1_pose = tVec[marker_1_index][0]
+                nearest_marker_id = None
+                nearest_marker_distance = float('inf')
 
-            nearest_marker_id = None
-            nearest_marker_distance = float('inf')
+                for ids, tVec_i in zip(marker_IDs, tVec):
+                    # Skip the ArUco marker with ID '1'
+                    if not np.array_equal(ids, [1]):  
+                        # Calculate the distance to each other marker
+                        distance = calculate_distance(marker_1_pose[0][0], marker_1_pose[0][1], tVec_i[0][0], tVec_i[0][1])
 
-            for ids, tVec_i in zip(marker_IDs, tVec):
-                # Skip the ArUco marker with ID '1'
-                if not np.array_equal(ids, [1]):  
-                    # Calculate the distance to each other marker
-                    distance = calculate_distance(marker_1_pose[0][0], marker_1_pose[0][1], tVec_i[0][0], tVec_i[0][1])
-
-                    # Update the nearest marker information
-                    if distance < nearest_marker_distance:
-                        nearest_marker_id = ids[0]
-                        
-                        nearest_marker_distance = distance
-            tracker(nearest_marker_id,lat_lon)
-            
-        for ids, corners, i in zip(marker_IDs, marker_corners, total_markers):
-            if (ids==1):
-                corners = corners.reshape(4, 2)
-                corners = corners.astype(int)
-                top_right = corners[0].ravel()
-                top_left = corners[1].ravel()
-                bottom_right = corners[2].ravel()
-                bottom_left = corners[3].ravel()
-
-                # Calculating the distance with only X and Y Coordinates
-                distance = np.sqrt(  tVec[i][0][0] ** 2 + tVec[i][0][1] ** 2 )
-                cv.putText(frame, f"{round(tVec[i][0][0],1)},{round(tVec[i][0][1],1)} ", bottom_right, cv.FONT_HERSHEY_PLAIN, 1.0, (0, 0, 255), 2, cv.LINE_AA,)
+                        # Update the nearest marker information
+                        if distance < nearest_marker_distance:
+                            nearest_marker_id = ids[0]
+                            
+                            nearest_marker_distance = distance
+                tracker(nearest_marker_id,lat_lon)
                 
+            for ids, corners, i in zip(marker_IDs, marker_corners, total_markers):
+                if (ids==100):
+                    corners = corners.reshape(4, 2)
+                    corners = corners.astype(int)
+                    top_right = corners[0].ravel()
+                    top_left = corners[1].ravel()
+                    bottom_right = corners[2].ravel()
+                    bottom_left = corners[3].ravel()
 
-    ####Resizing the Window#######        
-    cv.namedWindow('frame', cv.WINDOW_NORMAL)
-    cv.resizeWindow('frame', 1080, 720)
-    cv.imshow("frame", frame)
-    key = cv.waitKey(1)
-    if key == ord("q"):
-        break
-cap.release()
-cv.destroyAllWindows()
+                    # Calculating the distance with only X and Y Coordinates
+                    distance = np.sqrt(  tVec[i][0][0] ** 2 + tVec[i][0][1] ** 2 )
+                    cv.putText(frame, f"{round(tVec[i][0][0],1)},{round(tVec[i][0][1],1)} ", bottom_right, cv.FONT_HERSHEY_PLAIN, 1.0, (0, 0, 255), 2, cv.LINE_AA,)
+                    pos_x = round(tVec[i][0][0],1)
+                    pos_y = round(tVec[i][0][1],1)
+                    return print(pos_x, pos_y)
+                    
+                    
+
+        ####Resizing the Window#######        
+        # cv.namedWindow('frame', cv.WINDOW_NORMAL)
+        # cv.resizeWindow('frame', 1080, 720)
+        # cv.imshow("frame", frame)
+        # key = cv.waitKey(1)
+        # if key == ord("q"):
+            # break
+    
+    cap.release()
+    cv.destroyAllWindows()
+
+# return print(pos_x, pos_y)
+if __name__ == "__main__":
+    main()
