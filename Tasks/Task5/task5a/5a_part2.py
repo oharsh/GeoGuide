@@ -23,21 +23,21 @@ stoppingPoints = {
     "C": (420, 207),
     "D": (195, 203),
     "E": (196, 58),
-    "I": ()
+    "I": (125, 432),
 }
 
 #Destination Dictionary
-A = {"B": "FLRF", "C": "FLSRF", "D": "TRSRF", "E": "TRSSSF", 'I':"TLI"}
+A = {"B": "FLRF", "C": "FLSRF", "D": "TRSRF", "E": "TRSSSF", 'I':"TLQ"}
 
-B = {"A": "TLRT", "C": "FLLT", "D": "TRLT","E": "TSRSSF", 'I':"TLRLI"}
+B = {"A": "TLRT", "C": "FLLT", "D": "TRLT","E": "TSRSSF", 'I':"TLRLQ"}
 
-C = {"A": "TLSRT", "B": "FRRT", "D": "TST", "E": "TSRSF", 'I': "TLSRLI"}
+C = {"A": "TLSRT", "B": "FRRT", "D": "TST", "E": "TSRSF", 'I': "TLSRLQ"}
 
-D = {"A": "TLSLF", "B": "FRLF", "C": "FSF", "E": "TRSF", 'I': "TLSSI"}
+D = {"A": "TLSLF", "B": "FRLF", "C": "FSF", "E": "TRSF", 'I': "TLSSQ"}
 
-E = {"A": "TSSSLF", "B": "TSSLSF", "C": "TSLSF", "D": "TSLF", 'I': "TSSSSI"}
+E = {"A": "TSSSLF", "B": "TSSLSF", "C": "TSLSF", "D": "TSLF", 'I': "TSSSSQ"}
 
-I = {"A": "IRF", "B": "IRLRF", "C": "ISRLRF", "D": "ISSRF", "E": "ISSSSF"}
+I = {"A": "IRF", "B": "IRLRF", "C": "ISRLRF", "D": "ISSRF", "E": "ISSSSQ"}
 
 def signal_handler(sig, frame):
     print('Clean-up !')
