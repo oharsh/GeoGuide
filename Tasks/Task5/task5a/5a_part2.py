@@ -10,7 +10,7 @@ import cv2.aruco as aruco
 #globals
 ip = "192.168.137.50" 
   
-test = {"A":"Fire", "D":"Combat"}
+test = {"D":"Fire",}
 
 sent = 0
 emergency = 'e'
@@ -23,8 +23,9 @@ stoppingPoints = {
     "C": (420, 207),
     "D": (195, 203),
     "E": (196, 58),
-    "I": (125, 432),
+    "Q": (125, 432),
 }
+
 
 #Destination Dictionary
 A = {"B": "FLRF", "C": "FLSRF", "D": "TRSRF", "E": "TRSSSF", 'I':"TLQ"}
@@ -146,6 +147,19 @@ def main():
                         sent +=1
                     else:
                         goto(curr_pos,'I', conn, addr)
+
+                elif (mmm == "abort"):
+                    while True:
+                        live = liveTracking()
+                        print(live)
+                        if (live[0] >= (stoppingPoints["Q"][0]-10) and live[0] <= (stoppingPoints["Q"][0]+10)):
+                            if(live[1] >= (stoppingPoints["Q"][1]-10) and live[1] <= (stoppingPoints["Q"][1]+10)):
+                                sendData(conn, addr, emergency)
+                                print("hogya")
+                                return 1
+
+
+
 
 if __name__ == "__main__":
   main()

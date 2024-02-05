@@ -63,7 +63,6 @@ WiFiClient client;
 void setup() {
   delay(1000);
   WiFi.begin(ssid, pass);
-
   delay(5000);
   // Serial.begin(115200);
   // while(!Serial){delay(100);}
@@ -107,13 +106,20 @@ void setup() {
 }
 
 void loop() {
-  // while(true){
-  //   sensor = sensorsReading();
-  //   printCompleteInfo(sensor);
-  // }
   
   sensor = sensorsReading();
-  
+
+  if(roadConfiguration[0] == 'Q'){
+    client.print("abort");
+    while (!client.available()) {
+      sensor = sensorsReading();
+      followLine(sensor.s1, sensor.s2, sensor.s3, sensor.s4, sensor.s5);
+    }
+    while (true){
+      stop();
+      delay(1000);
+    }
+  }
 
   if(roadConfiguration[0] == 'I'){
     roadConfiguration.remove(0, 1);
@@ -146,7 +152,9 @@ void loop() {
       followLine(sensor.s1, sensor.s2, sensor.s3, sensor.s4, sensor.s5);
     }
     stop();
+    digitalWrite(buzzer, LOW);
     delay(1000);
+    digitalWrite(buzzer, HIGH);
     client.flush();
     client.println("send");
     roadConfiguration = client.readStringUntil('\n');

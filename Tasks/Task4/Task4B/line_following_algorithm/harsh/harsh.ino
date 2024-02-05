@@ -4,21 +4,20 @@
 const char* ssid = "MSI";
 const char* pass = "jaimatadi";
 const uint16_t port = 8002;
-// const char* host = "192.168.137.50";
-const char* host = "192.168.137.50"; //gaurav
+const char* host = "192.168.137.50"; 
 
 uint16_t leftSpeed = 255;
 uint16_t rightSpeed = 255;
 
-const uint16_t nodeTurnDelay = 970; //970
+const uint16_t nodeTurnDelay = 970; 
 const uint16_t turnDelay = 20;
 const uint16_t sideTurnDelay = 40;
 
-int sensor1Pin = 33; //33
+int sensor1Pin = 33; 
 int sensor2Pin = 32;
 int sensor3Pin = 35;
 int sensor4Pin = 34;
-int sensor5Pin = 4;  //25 
+int sensor5Pin = 39;  
 
 int leftMotorPin1 = 12;
 int leftMotorPin2 = 14;
@@ -47,9 +46,6 @@ struct sense {
   int s5;
 };
 
-//flags
-// bool uTurnFlag = false;
-
 sense sensor;
 
 State currentState = FOLLOW_LINE;
@@ -61,59 +57,54 @@ String emergency = "E";
 WiFiClient client;
 
 void setup() {
-  delay(1000);
-  WiFi.begin(ssid, pass);
 
-  delay(5000);
-  // Serial.begin(115200);
-  // while(!Serial){delay(100);}
+  WiFi.begin(ssid, pass);
+  // delay(5000);
+  // // Serial.begin(115200);
+  // // while(!Serial){delay(100);}
 
   pinMode(leftMotorPin1, OUTPUT);
   pinMode(leftMotorPin2, OUTPUT);
   pinMode(rightMotorPin1, OUTPUT);
   pinMode(rightMotorPin2, OUTPUT);
 
-  pinMode(ledPin, OUTPUT);
-  pinMode(buzzer, OUTPUT);
+  // pinMode(ledPin, OUTPUT);
+  // pinMode(buzzer, OUTPUT);
 
   setMotorSpeeds(leftSpeed, rightSpeed);
 
-  // digitalWrite(ledPin, HIGH);
-  digitalWrite(buzzer, LOW);
-  delay(1000);
-  digitalWrite(buzzer, HIGH);
-  // digitalWrite(ledPin, LOW);
+  // // digitalWrite(ledPin, HIGH);
+  // digitalWrite(buzzer, LOW);
+  // delay(1000);
+  // digitalWrite(buzzer, HIGH);
+  // // digitalWrite(ledPin, LOW);
 
 
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.println("...");
-  }
+  // while (WiFi.status() != WL_CONNECTED) {
+  //   delay(500);
+  //   Serial.println("...");
+  // }
 
-  Serial.print("connected with ip: ");
-  Serial.println(WiFi.localIP());
+  // Serial.print("connected with ip: ");
+  // Serial.println(WiFi.localIP());
 
-  while (!client.connect(host, port)) {
-    Serial.println("no connection");
-    delay(500);
-  };
-  Serial.println("connection established");
-  while (!client.available()) {
-    delay(50);
-  }
-  roadConfiguration = client.readStringUntil('\n');
-  Serial.println("new road config obtained");
-  Serial.println(roadConfiguration);
+  // while (!client.connect(host, port)) {
+  //   Serial.println("no connection");
+  //   delay(500);
+  // };
+  // Serial.println("connection established");
+  // while (!client.available()) {
+  //   delay(50);
+  // }
+  // roadConfiguration = client.readStringUntil('\n');
+  // Serial.println("new road config obtained");
+  // Serial.println(roadConfiguration);
 }
 
 void loop() {
-  // while(true){
-  //   sensor = sensorsReading();
-  //   printCompleteInfo(sensor);
-  // }
+  Serial.begin(115200);
   
-  sensor = sensorsReading();
-  
+  sensor = sensorsReading();  
 
   if(roadConfiguration[0] == 'I'){
     roadConfiguration.remove(0, 1);
