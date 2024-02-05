@@ -14,6 +14,7 @@ from tensorflow.keras.applications.inception_v3 import InceptionV3
 from tensorflow.keras.applications.inception_v3 import preprocess_input, decode_predictions
 from tensorflow.keras.preprocessing.image import ImageDataGenerator,load_img
 from tensorflow.keras.preprocessing import image
+import pickle
 
 
 arena_path = "/home/deadmonk/Desktop/eyrc23_GG_1667/Tasks/Task5/task5a/arena/"
@@ -92,7 +93,7 @@ def classify_event(image_path):
   img_data=preprocess_input(x)
   a=np.argmax(model.predict(img_data), axis=1)[0]
   
-  event_names = ['combat', 'human_aid_rehabilitation', 'military_vehicles', 'fire', 'destroyed_buildings', 'numbers'] 
+  event_names = ['combat', 'human_aid_rehabilitation', 'military_vehicles', 'fire', 'destroyed_buildings', ' '] 
   event = event_names[a]
 
   return event
@@ -161,18 +162,21 @@ def task_4a_return():
             new_value = str(detected_list[i])
             identified_labels[new_label] = new_value
 
-                
-    # identified_labels = {"A": str(detected_list[0]), "B": str(detected_list[1]), 
-    #                      "C": str(detected_list[2]), "D": str(detected_list[3]), 
-    #                      "E": str(detected_list[4])}
-
     return identified_labels
 
 def main():
   # arena_image(arena_path)
   # event_locator(arenaImage)
-  identified_labels = task_4a_return()
+  identified_labels = task_4a_return()  
+  with open("/home/deadmonk/Desktop/eyrc23_GG_1667/Tasks/Task5/task5a/event/events.pickle", "wb") as f :
+    pickle.dump(identified_labels, f)
+  f.close()
+
+  dkey = identified_labels.keys()
+  dkey = sorted(dkey)
+  identified_labels = {i : identified_labels[i] for i in dkey}
   print(identified_labels)
+
 
 
 if __name__ == "__main__":

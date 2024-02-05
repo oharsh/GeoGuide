@@ -6,11 +6,13 @@ import numpy as np
 import cv2 as cv
 from enum import Enum
 import cv2.aruco as aruco
-
+import pickle 
 #globals
 ip = "192.168.137.50" 
   
-test = {"D":"Fire",}
+with open("/home/deadmonk/Desktop/eyrc23_GG_1667/Tasks/Task5/task5a/event/events.pickle", "rb") as f :
+    test = pickle.load(f)
+f.close()
 
 sent = 0
 emergency = 'e'
@@ -162,4 +164,5 @@ def main():
 
 
 if __name__ == "__main__":
-  main()
+    print(test)
+    main()
