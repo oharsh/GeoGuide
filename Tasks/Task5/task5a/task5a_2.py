@@ -40,7 +40,7 @@ D = {"A": "TLSLF", "B": "FRLF", "C": "FSF", "E": "TRSF", 'I': "TLSSQ"}
 
 E = {"A": "TSSSLF", "B": "TSSLSF", "C": "TSLSF", "D": "TSLF", 'I': "TSSSSQ"}
 
-I = {"A": "IRF", "B": "IRLRF", "C": "ISRLRF", "D": "ISSRF", "E": "ISSSSQ"}
+I = {"A": "IRF", "B": "IRLRF", "C": "ISSRSF", "D": "ISSRF", "E": "ISSSSQ"}
 
 def signal_handler(sig, frame):
     print('Clean-up !')
