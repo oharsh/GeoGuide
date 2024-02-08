@@ -7,6 +7,7 @@ import cv2 as cv
 from enum import Enum
 import cv2.aruco as aruco
 import pickle 
+
 #globals
 ip = "192.168.137.50" 
   
@@ -16,7 +17,6 @@ f.close()
 
 sent = 0
 emergency = 'e'
-
 
 
 stoppingPoints = {
