@@ -9,7 +9,7 @@ import cv2.aruco as aruco
 import pickle 
 
 #globals
-ip = "192.168.137.50" 
+ip = "192.168.137.49" 
   
 # with open("/home/deadmonk/Desktop/eyrc23_GG_1667/Tasks/Task5/task5a/event/events.pickle", "rb") as f :
 #     test = pickle.load(f)
@@ -92,7 +92,7 @@ def liveTracking():
           # cv.circle(frame, (int(center_x), int(center_y)), 5, (0, 255, 0), -1)
           pos_x = int(center_x)
           pos_y = int(center_y)
-          cap.release()
+        #   cap.release()
           return (pos_x, pos_y)
 
 
