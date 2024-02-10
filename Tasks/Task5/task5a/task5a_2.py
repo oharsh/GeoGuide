@@ -14,7 +14,7 @@ from cv2 import aruco
 import csv
 
 #globals
-ip = "192.168.137.50" 
+ip = "192.168.137.49" 
 
 ##paths
 pickle_file = "/home/deadmonk/Desktop/eyrc23_GG_1667/Tasks/Task5/task5a/event/events.pickle"
