@@ -10,7 +10,7 @@ const char* host = "192.168.137.50"; //gaurav
 uint16_t leftSpeed = 255;
 uint16_t rightSpeed = 255;
 
-const uint16_t nodeTurnDelay = 970; //970
+const uint16_t nodeTurnDelay = 850; //970
 const uint16_t turnDelay = 20;
 const uint16_t sideTurnDelay = 40;
 
@@ -115,6 +115,10 @@ void loop() {
       sensor = sensorsReading();
       followLine(sensor.s1, sensor.s2, sensor.s3, sensor.s4, sensor.s5);
     }
+    stop();
+    digitalWrite(buzzer, LOW);
+    delay(5000);
+    digitalWrite(buzzer, HIGH);
     while (true){
       stop();
       delay(1000);
@@ -225,7 +229,7 @@ void detectNode() {
       delay(1000);
       digitalWrite(buzzer, HIGH);
       forward();
-      delay(400);
+      delay(250);
       break;
     case 'R':
       Serial.println("Moving Right");
@@ -379,7 +383,7 @@ void uturnfast() {
   digitalWrite(leftMotorPin2, LOW);
   digitalWrite(rightMotorPin2, HIGH);
   digitalWrite(rightMotorPin1, LOW);
-  delay(1200);
+  delay(1090);
   stop();
 }
 
