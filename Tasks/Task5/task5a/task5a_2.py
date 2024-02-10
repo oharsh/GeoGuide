@@ -155,8 +155,16 @@ def liveTracking():
   param_markers = aruco.DetectorParameters()
   while True:
     # ret, frame = cap.read()
+    while True:
+            try:
+                if type(gframe) == np.ndarray:
+                    break
+
+            except Exception as e:
+                print(e)
+                continue
     frame = gframe
-    print(frame)
+    # print(frame)
     # if not ret:
     #     print("no frame is received")
     #     break
@@ -254,6 +262,14 @@ def track_bot():
 
     while True:
         # global gframe
+        while True:
+            try:
+                if type(gframe) == np.ndarray:
+                    break
+
+            except Exception as e:
+                print(e)
+                continue
         frame = gframe
         # print(frame)
         # rec , frame = cap.read()
