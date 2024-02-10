@@ -344,7 +344,6 @@ if __name__ == "__main__":
 #   frame = None
   test = {
     "D": "ddd",
-    "E": "dddd",
     }
   global cap
   cap = cv.VideoCapture(0)
