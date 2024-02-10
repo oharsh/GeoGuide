@@ -129,6 +129,7 @@ def take_frame():
     while True:
         ret, frame = cap.read()
         global gframe
+        # if frame:= gframe
         gframe = frame
         
 
@@ -155,6 +156,7 @@ def liveTracking():
   while True:
     # ret, frame = cap.read()
     frame = gframe
+    print(frame)
     # if not ret:
     #     print("no frame is received")
     #     break
@@ -253,6 +255,7 @@ def track_bot():
     while True:
         # global gframe
         frame = gframe
+        # print(frame)
         # rec , frame = cap.read()
         # if not rec:
         #     continue
@@ -334,5 +337,6 @@ if __name__ == "__main__":
   t3 = threading.Thread(target=track_bot)
 
   t1.start()
+  sleep(1)
   t3.start()
   t2.start()
