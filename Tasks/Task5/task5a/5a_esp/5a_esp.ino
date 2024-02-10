@@ -61,7 +61,7 @@ String emergency = "E";
 WiFiClient client;
 
 void setup() {
-  delay(1000);
+  // delay(1000);
   WiFi.begin(ssid, pass);
   delay(5000);
   // Serial.begin(115200);
