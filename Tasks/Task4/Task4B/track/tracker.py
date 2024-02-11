@@ -4,60 +4,54 @@ import numpy as np
 import csv
 import math
 import os
+import threading
+import time 
 
-calib_data_path = "/home/deadmonk/Desktop/eyrc23_GG_1667/Environment/camCal/MultiMatrix.npz"
-
-calib_data = np.load(calib_data_path)
-
-cam_mat = calib_data["camMatrix"]
-dist_coef = calib_data["distCoef"]
-r_vectors = calib_data["rVector"]
-t_vectors = calib_data["tVector"]
-
-MARKER_SIZE = 8  # centimeters 
-
-marker_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_250)
-
-param_markers = aruco.DetectorParameters()
-
-cap = cv.VideoCapture(2)
+# calib_data_path = "/home/deadmonk/Desktop/eyrc23_GG_1667/Environment/camCal/MultiMatrix.npz"
 
 
 
-#####################Read the coordinates from latlong.csv file and write to live.csv#########
+# MARKER_SIZE = 8  # centimeters 
+
+# marker_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_250)
+
+# param_markers = aruco.DetectorParameters()
+
+
+
+# def take_frame():
+#     global cap 
+#     cap = cv.VideoCapture(2)
+
+
+
+
+
+
 os.chdir("/home/deadmonk/Desktop/eyrc23_GG_1667/Tasks/Task4/Task4B/track")
-lat_lon ={}
-count=1
-csv_name = "latlong.csv"
-with open('latlong.csv') as csv_file:
-    csv_reader = csv.reader(csv_file)
-    for row in csv_reader:
-            id = row[0]
-            count= count + 1
-            lat = row[1]
-            lon = row[2]
-            lat_lon[id]= [lat,lon]
+# lat_lon ={}
+# count=1
+# csv_name = "latlong.csv"
+# with open('latlong.csv') as csv_file:
+#     csv_reader = csv.reader(csv_file)
+#     for row in csv_reader:
+#             id = row[0]
+#             count= count + 1
+#             lat = row[1]
+#             lon = row[2]
+#             lat_lon[id]= [lat,lon]
 
+# def tracker(ar_id, lat_lon):
 
-def write_csv(loc, csv_name):
-
-    with open(csv_name,'w') as csv_file:
-        csv_writer = csv.writer(csv_file,delimiter=',')
-        csv_writer.writerow(['lat','lon'])
-        csv_writer.writerow(loc)
-
-def tracker(ar_id, lat_lon):
-
-    coordinate = None
-    ar_id = str(ar_id)
-    if ar_id in lat_lon:
-        coordinate = lat_lon[ar_id]
-        with open("live.csv",'w') as csv_file:
-            csv_writer = csv.writer(csv_file)
-            csv_writer.writerow(['lat','lon'])
-            csv_writer.writerow(coordinate)
-    return coordinate
-
+#     coordinate = None
+#     ar_id = str(ar_id)
+#     if ar_id in lat_lon:
+#         coordinate = lat_lon[ar_id]
+#         with open("live.csv",'w') as csv_file:
+#             csv_writer = csv.writer(csv_file)
+#             csv_writer.writerow(['lat','lon'])
+#             csv_writer.writerow(coordinate)
+#     return coordinate
 
 def liveTracking():
   calib_data_path = "/home/deadmonk/Desktop/eyrc23_GG_1667/Environment/camCal/MultiMatrix.npz"
@@ -71,9 +65,9 @@ def liveTracking():
 
   cap = cv.VideoCapture(2)
   while True:
-    ret, frame = cap.read()
-    if not ret:
-      break
+    # ret, frame = cap.read()
+    # if not ret:
+    #   break
     gray_frame = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
     marker_corners, marker_IDs, reject = aruco.detectMarkers(gray_frame, marker_dict, parameters=param_markers)
       
@@ -95,17 +89,19 @@ def liveTracking():
           cap.release()
           return (pos_x, pos_y)
 
+# def calculate_distance(x1, y1, x2, y2):
+#     return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
 
-def calculate_distance(x1, y1, x2, y2):
-    return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+def track_bot():
+    #loading calibration data
+    calib_data = np.load(calib_data_path)
+    cam_mat = calib_data["camMatrix"]
+    dist_coef = calib_data["distCoef"]
+    r_vectors = calib_data["rVector"]
+    t_vectors = calib_data["tVector"]
 
-
-
-def main():
     while True:
-        ret, frame = cap.read()
-        if not ret:
-            break
+        _, frame = cap.read()
         gray_frame = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
         marker_corners, marker_IDs, reject = aruco.detectMarkers(gray_frame, marker_dict, parameters=param_markers)
 
@@ -154,7 +150,7 @@ def main():
                     
                     
 
-        ###Resizing the Window#######        
+        #Resizing the Window      
         cv.namedWindow('frame', cv.WINDOW_NORMAL)
         cv.resizeWindow('frame', 1080, 720)
         cv.imshow("frame", frame)
@@ -165,6 +161,8 @@ def main():
     cap.release()
     cv.destroyAllWindows()
 
-# return print(pos_x, pos_y)
 if __name__ == "__main__":
-    main()
+    t2 = threading.Thread(target=take_frame)
+    t1 = threading.Thread(target=track_bot)
+    t2.start()
+    t1.start()
