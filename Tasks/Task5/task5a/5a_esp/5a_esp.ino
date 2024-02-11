@@ -12,7 +12,7 @@ uint16_t rightSpeed = 255;
 
 const uint16_t nodeTurnDelay = 620; //970
 const uint16_t turnDelay = 20;
-const uint16_t sideTurnDelay = 40;
+const uint16_t sideTurnDelay = 60;
 
 int sensor1Pin = 33; //33
 int sensor2Pin = 32;
@@ -156,11 +156,11 @@ void loop() {
       followLine(sensor.s1, sensor.s2, sensor.s3, sensor.s4, sensor.s5);
     }
     stop();
+    client.flush();
+    client.println("send");
     digitalWrite(buzzer, LOW);
     delay(1000);
     digitalWrite(buzzer, HIGH);
-    client.flush();
-    client.println("send");
     roadConfiguration = client.readStringUntil('\n');
     return;
   }
@@ -224,28 +224,24 @@ void detectNode() {
   switch (currentRoadElement) {
     case 'S':
       Serial.println("Moving forward");
-      stop();
-      digitalWrite(buzzer, LOW);
-      delay(1000);
-      digitalWrite(buzzer, HIGH);
       forward();
       delay(250);
       break;
     case 'R':
       Serial.println("Moving Right");
       stop();
-      digitalWrite(buzzer, LOW);
-      delay(1000);
-      digitalWrite(buzzer, HIGH);
+      delay(100);
+      // digitalWrite(buzzer, LOW);
+      // digitalWrite(buzzer, HIGH);
       right();
       delay(nodeTurnDelay);
       break;
     case 'L':
       Serial.println("Moving Left");
       stop();
-      digitalWrite(buzzer, LOW);
-      delay(1000);
-      digitalWrite(buzzer, HIGH);
+      delay(100);
+      // digitalWrite(buzzer, LOW);
+      // digitalWrite(buzzer, HIGH);
       left();
       delay(nodeTurnDelay);
       break;

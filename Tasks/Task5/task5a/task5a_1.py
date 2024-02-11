@@ -63,7 +63,7 @@ def arena_image(arena_path):
 def event_locator(arena): 
     gray = cv.cvtColor(arena, cv.COLOR_BGR2GRAY)
    
-    _, thresholded = cv.threshold(gray, 185, 255, cv.THRESH_BINARY)
+    _, thresholded = cv.threshold(gray, 180, 255, cv.THRESH_BINARY)
 
     contours, _ = cv.findContours(thresholded, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
     area_threshold = 800
