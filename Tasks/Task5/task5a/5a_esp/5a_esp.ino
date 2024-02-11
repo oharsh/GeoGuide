@@ -5,14 +5,14 @@ const char* ssid = "MSI";
 const char* pass = "jaimatadi";
 const uint16_t port = 8002;
 // const char* host = "192.168.137.50";
-const char* host = "192.168.137.50"; //gaurav
+const char* host = "192.168.137.49"; //gaurav
 
 uint16_t leftSpeed = 255;
 uint16_t rightSpeed = 255;
 
-const uint16_t nodeTurnDelay = 850; //970
+const uint16_t nodeTurnDelay = 620; //970
 const uint16_t turnDelay = 20;
-const uint16_t sideTurnDelay = 40;
+const uint16_t sideTurnDelay = 60;
 
 int sensor1Pin = 33; //33
 int sensor2Pin = 32;
@@ -28,7 +28,7 @@ int rightMotorPin2 = 26;
 const uint16_t ena = 13;  
 const uint16_t enb = 25;
 
-int ledPin = 5;
+// int ledPin = 5;
 int buzzer = 15;
 
 char head;
@@ -61,9 +61,9 @@ String emergency = "E";
 WiFiClient client;
 
 void setup() {
-  delay(1000);
-  WiFi.begin(ssid, pass);
   delay(5000);
+  WiFi.begin(ssid, pass);
+  delay(1000);
   // Serial.begin(115200);
   // while(!Serial){delay(100);}
 
@@ -72,7 +72,7 @@ void setup() {
   pinMode(rightMotorPin1, OUTPUT);
   pinMode(rightMotorPin2, OUTPUT);
 
-  pinMode(ledPin, OUTPUT);
+  // pinMode(ledPin, OUTPUT);
   pinMode(buzzer, OUTPUT);
 
   setMotorSpeeds(leftSpeed, rightSpeed);
@@ -156,11 +156,11 @@ void loop() {
       followLine(sensor.s1, sensor.s2, sensor.s3, sensor.s4, sensor.s5);
     }
     stop();
+    client.flush();
+    client.println("send");
     digitalWrite(buzzer, LOW);
     delay(1000);
     digitalWrite(buzzer, HIGH);
-    client.flush();
-    client.println("send");
     roadConfiguration = client.readStringUntil('\n');
     return;
   }
@@ -224,28 +224,24 @@ void detectNode() {
   switch (currentRoadElement) {
     case 'S':
       Serial.println("Moving forward");
-      stop();
-      digitalWrite(buzzer, LOW);
-      delay(1000);
-      digitalWrite(buzzer, HIGH);
       forward();
       delay(250);
       break;
     case 'R':
       Serial.println("Moving Right");
       stop();
-      digitalWrite(buzzer, LOW);
-      delay(1000);
-      digitalWrite(buzzer, HIGH);
+      delay(100);
+      // digitalWrite(buzzer, LOW);
+      // digitalWrite(buzzer, HIGH);
       right();
       delay(nodeTurnDelay);
       break;
     case 'L':
       Serial.println("Moving Left");
       stop();
-      digitalWrite(buzzer, LOW);
-      delay(1000);
-      digitalWrite(buzzer, HIGH);
+      delay(100);
+      // digitalWrite(buzzer, LOW);
+      // digitalWrite(buzzer, HIGH);
       left();
       delay(nodeTurnDelay);
       break;

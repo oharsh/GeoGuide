@@ -23,5 +23,7 @@ temp*.py
 *.jpeg
 *.h5
 temp.*
+*.pickle
+
 
 

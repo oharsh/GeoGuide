@@ -50,19 +50,20 @@ def arena_image(arena_path):
     # print(arena_path+arena_name)
     frame = cv.imread(arena_path+"arena.jpg")
     
-    y=10
-    x=90
+    y=5
+    x=85
     h=460
-    w=470
+    w=475
     cropped = frame[y:y+h, x:x+w]
-    arena = cv.resize(cropped, (700, 700))
+    arena = cv.resize(cropped, (500, 500)) ##490,465
+   
     return arena 
     # return cv.imwrite(arena_path+"modified.jpg", arena)
 
 def event_locator(arena): 
     gray = cv.cvtColor(arena, cv.COLOR_BGR2GRAY)
    
-    _, thresholded = cv.threshold(gray, 190, 255, cv.THRESH_BINARY)
+    _, thresholded = cv.threshold(gray, 180, 255, cv.THRESH_BINARY)
 
     contours, _ = cv.findContours(thresholded, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
     area_threshold = 800
@@ -113,7 +114,7 @@ def classification(coordinate_list,arena):
         cv.putText(arena, detected_event, (x, y - 10), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
 
-    new_arena = cv.resize(arena, (490, 465))
+    new_arena = cv.resize(arena, (700, 700))
     cv.imshow('Identified Events', new_arena)
     cv.waitKey(0)
     cv.destroyAllWindows()
