@@ -15,17 +15,6 @@ import csv
 
 #globals
 ip = "192.168.137.49" 
-<<<<<<< HEAD
-  
-# with open("/home/deadmonk/Desktop/eyrc23_GG_1667/Tasks/Task5/task5a/event/events.pickle", "rb") as f :
-#     test = pickle.load(f)
-# f.close()
-test ={
-    "D":"sss",
-    "E":"ddd"
-}
-=======
->>>>>>> camera2
 
 ##paths
 pickle_file = "/home/deadmonk/Desktop/eyrc23_GG_1667/Tasks/Task5/task5a/event/events.pickle"
@@ -163,11 +152,6 @@ def liveTracking():
   dist_coef = calib_data["distCoef"]
   marker_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_250)
   param_markers = aruco.DetectorParameters()
-<<<<<<< HEAD
-
-  cap = cv.VideoCapture(0)
-=======
->>>>>>> camera2
   while True:
     while True:
         if type(gframe) == np.ndarray:
@@ -193,10 +177,6 @@ def liveTracking():
           # cv.circle(frame, (int(center_x), int(center_y)), 5, (0, 255, 0), -1)
           pos_x = int(center_x)
           pos_y = int(center_y)
-<<<<<<< HEAD
-        #   cap.release()
-=======
->>>>>>> camera2
           return (pos_x, pos_y)
 
 def goto(current_pos, destn_pos, conn, addr):
