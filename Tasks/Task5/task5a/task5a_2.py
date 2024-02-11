@@ -33,7 +33,7 @@ stoppingPoints = {
     "A": (197, 388),
     "B": (415, 295),  
     "C": (420, 207),
-    "D": (195, 203),
+    "D": (196, 198),
     "E": (199, 57),
     "Q": (125, 432),
 }
@@ -143,7 +143,7 @@ def cleanup():
 
 def sendData(conn, addr, message) :
     conn.sendall(str.encode(str(message)))
-    print("string sent", str.encode(str(message)))
+    # print("string sent", str.encode(str(message)))
 
 def liveTracking():
 
@@ -205,6 +205,7 @@ def command_center():
         print("........")
         conn, addr = s.accept()
         with conn:
+            sleep(2)
             print("connected to {addr}".format(addr = addr))
             goto(curr_pos, destination[sent],conn, addr)
             curr_pos = destination[sent]
@@ -214,12 +215,12 @@ def command_center():
                     
                 enc_mes = conn.recv(1024)
                 dec_mes = enc_mes.decode()
-                print(dec_mes)
+                # print(dec_mes)
                
                 if(dec_mes == "ready"):
                     while True:
                         live = liveTracking()
-                        print(type(live),"ready", live[0], live[1])
+                        # print(type(live),"ready", live[0], live[1])
                         if (live[0] >= (stoppingPoints[curr_pos][0]-5) and live[0] <= (stoppingPoints[curr_pos][0]+5)):
                             if(live[1] >= (stoppingPoints[curr_pos][1]-5) and live[1] <= (stoppingPoints[curr_pos][1]+5)):
                                 sendData(conn, addr, emergency)
@@ -236,7 +237,7 @@ def command_center():
                 elif (dec_mes == "abort"):
                     while True:
                         live = liveTracking()
-                        print(live)
+                        # print(live)
                         if (live[0] >= (stoppingPoints["Q"][0]-10) and live[0] <= (stoppingPoints["Q"][0]+10)):
                             if(live[1] >= (stoppingPoints["Q"][1]-10) and live[1] <= (stoppingPoints["Q"][1]+10)):
                                 sendData(conn, addr, emergency)
