@@ -5,12 +5,12 @@ const char* ssid = "MSI";
 const char* pass = "jaimatadi";
 const uint16_t port = 8002;
 // const char* host = "192.168.137.50";
-const char* host = "192.168.137.50"; //gaurav
+const char* host = "192.168.137.49"; //gaurav
 
 uint16_t leftSpeed = 255;
 uint16_t rightSpeed = 255;
 
-const uint16_t nodeTurnDelay = 850; //970
+const uint16_t nodeTurnDelay = 620; //970
 const uint16_t turnDelay = 20;
 const uint16_t sideTurnDelay = 40;
 
@@ -28,7 +28,7 @@ int rightMotorPin2 = 26;
 const uint16_t ena = 13;  
 const uint16_t enb = 25;
 
-int ledPin = 5;
+// int ledPin = 5;
 int buzzer = 15;
 
 char head;
@@ -61,9 +61,9 @@ String emergency = "E";
 WiFiClient client;
 
 void setup() {
-  // delay(1000);
-  WiFi.begin(ssid, pass);
   delay(5000);
+  WiFi.begin(ssid, pass);
+  delay(1000);
   // Serial.begin(115200);
   // while(!Serial){delay(100);}
 
@@ -72,7 +72,7 @@ void setup() {
   pinMode(rightMotorPin1, OUTPUT);
   pinMode(rightMotorPin2, OUTPUT);
 
-  pinMode(ledPin, OUTPUT);
+  // pinMode(ledPin, OUTPUT);
   pinMode(buzzer, OUTPUT);
 
   setMotorSpeeds(leftSpeed, rightSpeed);

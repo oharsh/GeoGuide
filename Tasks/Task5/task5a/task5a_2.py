@@ -19,17 +19,28 @@ ip = "192.168.137.49"
 ##paths
 pickle_file = "/home/deadmonk/Desktop/eyrc23_GG_1667/Tasks/Task5/task5a/event/events.pickle"
 calib_data_path = "/home/deadmonk/Desktop/eyrc23_GG_1667/Environment/camCal/MultiMatrix.npz"
-csv_path = "/home/deadmonk/Desktop/eyrc23_GG_1667/Tasks/Task4/Task4B/track/lat_long.csv"
+csv_path = "/home/deadmonk/Desktop/eyrc23_GG_1667/Tasks/Task5/task5a/csvfiles/lat_long.csv"
+csv_live = "/home/deadmonk/Desktop/eyrc23_GG_1667/Tasks/Task5/task5a/csvfiles/live.csv"
 
 ##tracker dependencies
 MARKER_SIZE = 8   
 marker_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_250)
 param_markers = aruco.DetectorParameters()
 
+
+##stopping points
+stoppingPoints = {
+    "A": (197, 388),
+    "B": (415, 295),  
+    "C": (420, 207),
+    "D": (195, 203),
+    "E": (199, 57),
+    "Q": (125, 432),
+}
+
 ##copying csv file
 lat_lon ={}
 count=1
-    # csv_name = "latlong.csv"
 with open(csv_path) as csv_file:
     csv_reader = csv.reader(csv_file)
     for row in csv_reader:
@@ -40,24 +51,15 @@ with open(csv_path) as csv_file:
             lat_lon[id]= [lat,lon]
 
 ##loadingpickle file
-# with open(pickle_file, "rb") as f :
-#     global test
-#     test = pickle.load(f)
-# f.close()
+test={}
+with open(pickle_file, "rb") as f :
+    test = pickle.load(f)
+f.close()
 
 
 sent = 0
 emergency = 'e'
 
-
-stoppingPoints = {
-    "A": (197, 388),
-    "B": (415, 295),  
-    "C": (420, 207),
-    "D": (195, 203),
-    "E": (196, 58),
-    "Q": (125, 432),
-}
 
 #Destination Dictionary
 A = {
@@ -81,7 +83,7 @@ C = {
     "B": "FRRT", 
     "D": "TST", 
     "E": "TSRSF", 
-    'I': "TLSRLQ"
+    'I': "TSLSSQ"
     }
 
 D = {
@@ -105,7 +107,7 @@ I = {
     "B": "IRLRF", 
     "C": "ISSRSF", 
     "D": "ISSRF", 
-    "E": "ISSSSQ"
+    "E": "ISSSSF"
     }
 
 def calculate_distance(x1, y1, x2, y2):
@@ -116,7 +118,7 @@ def tracker(ar_id, lat_lon):
     ar_id = str(ar_id)
     if ar_id in lat_lon:
         coordinate = lat_lon[ar_id]
-        with open("live.csv",'w') as csv_file:
+        with open(csv_live,'w') as csv_file:
             csv_writer = csv.writer(csv_file)
             csv_writer.writerow(['lat','lon'])
             csv_writer.writerow(coordinate)
@@ -124,15 +126,12 @@ def tracker(ar_id, lat_lon):
 
 
 def take_frame():
-    # global cap 
-    # cap = cv.VideoCapture(2)
+
     while True:
         ret, frame = cap.read()
         global gframe
-        # if frame:= gframe
         gframe = frame
         
-
 def signal_handler(sig, frame):
     print('Clean-up !')
     cleanup()
@@ -144,7 +143,7 @@ def cleanup():
 
 def sendData(conn, addr, message) :
     conn.sendall(str.encode(str(message)))
-    print("data sent", str.encode(str(message)))
+    print("string sent", str.encode(str(message)))
 
 def liveTracking():
 
@@ -154,20 +153,12 @@ def liveTracking():
   marker_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_250)
   param_markers = aruco.DetectorParameters()
   while True:
-    # ret, frame = cap.read()
     while True:
-            try:
-                if type(gframe) == np.ndarray:
-                    break
-
-            except Exception as e:
-                print(e)
-                continue
+        if type(gframe) == np.ndarray:
+            break
+            
     frame = gframe
-    # print(frame)
-    # if not ret:
-    #     print("no frame is received")
-    #     break
+    
     gray_frame = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
     marker_corners, marker_IDs, reject = aruco.detectMarkers(gray_frame, marker_dict, parameters=param_markers)
       
@@ -186,7 +177,6 @@ def liveTracking():
           # cv.circle(frame, (int(center_x), int(center_y)), 5, (0, 255, 0), -1)
           pos_x = int(center_x)
           pos_y = int(center_y)
-          cap.release()
           return (pos_x, pos_y)
 
 def goto(current_pos, destn_pos, conn, addr):
@@ -224,11 +214,12 @@ def command_center():
                     
                 enc_mes = conn.recv(1024)
                 dec_mes = enc_mes.decode()
+                print(dec_mes)
                
                 if(dec_mes == "ready"):
                     while True:
                         live = liveTracking()
-                        print(type(live), live[0], live[1])
+                        print(type(live),"ready", live[0], live[1])
                         if (live[0] >= (stoppingPoints[curr_pos][0]-5) and live[0] <= (stoppingPoints[curr_pos][0]+5)):
                             if(live[1] >= (stoppingPoints[curr_pos][1]-5) and live[1] <= (stoppingPoints[curr_pos][1]+5)):
                                 sendData(conn, addr, emergency)
@@ -325,7 +316,7 @@ def track_bot():
 
         #Resizing the Window      
         cv.namedWindow('frame', cv.WINDOW_NORMAL)
-        cv.resizeWindow('frame', 1080, 720)
+        cv.resizeWindow('frame', 700, 700)
         cv.imshow("frame", frame)
         key = cv.waitKey(1)
         if key == ord("q"):
@@ -339,14 +330,9 @@ def read_frame(cap):
     return frame
 
 if __name__ == "__main__":
-#   t1 = threading.Thread(target=take_frame)
-  global gframe
-#   frame = None
-  test = {
-    "D": "ddd",
-    }
+
   global cap
-  cap = cv.VideoCapture(0)
+  cap = cv.VideoCapture(2)
   t1 = threading.Thread(target=take_frame)
   t2 = threading.Thread(target=command_center)
   t3 = threading.Thread(target=track_bot)
