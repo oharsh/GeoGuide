@@ -24,6 +24,7 @@ temp*.py
 *.h5
 temp.*
 *.pickle
-
-
-
+*temp.*
+playground
+image
+Resources/

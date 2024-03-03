@@ -14,15 +14,15 @@ from cv2 import aruco
 import csv
 
 #globals
-ip = "192.168.137.49" 
+ip = "192.168.137.181" 
 
 ##paths
-pickle_file = "/home/deadmonk/Desktop/eyrc23_GG_1667/Tasks/Task5/task5a/event/events.pickle"
+pickle_file = "/home/deadmonk/Desktop/eyrc23_GG_1667/Tasks/Task5/event/events.pickle"
 calib_data_path = "/home/deadmonk/Desktop/eyrc23_GG_1667/Environment/camCal/MultiMatrix.npz"
-csv_path = "/home/deadmonk/Desktop/eyrc23_GG_1667/Tasks/Task5/task5a/csvfiles/lat_long.csv"
-csv_live = "/home/deadmonk/Desktop/eyrc23_GG_1667/Tasks/Task5/task5a/csvfiles/live.csv"
+csv_path = "/home/deadmonk/Desktop/eyrc23_GG_1667/Tasks/Task5/csvfiles/lat_long.csv"
+csv_live = "/home/deadmonk/Desktop/eyrc23_GG_1667/Tasks/Task5/csvfiles/live.csv"
 
-##tracker dependencies
+##csvWriter dependencies
 MARKER_SIZE = 8   
 marker_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_250)
 param_markers = aruco.DetectorParameters()
@@ -50,7 +50,7 @@ with open(csv_path) as csv_file:
             lon = row[2]
             lat_lon[id]= [lat,lon]
 
-##loadingpickle file
+#loadingpickle file
 test={}
 with open(pickle_file, "rb") as f :
     test = pickle.load(f)
@@ -58,8 +58,6 @@ f.close()
 
 
 sent = 0
-emergency = 'e'
-
 
 #Destination Dictionary
 A = {
@@ -67,7 +65,7 @@ A = {
      "C": "FLSRF",
      "D": "TRSRF", 
      "E": "TRSSSF", 
-     'I':"TLQ"
+     'I': "TLQ"
     }
 
 B = {
@@ -110,10 +108,14 @@ I = {
     "E": "ISSSSF"
     }
 
-def calculate_distance(x1, y1, x2, y2):
-    return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
 
-def tracker(ar_id, lat_lon):
+def calculateDistance(source, target):
+  pos_x = pow(source[0] - target[0], 2)
+  pos_y = pow(source[1] - target[1], 2)
+  j = pow(pos_x + pos_y, 1/2)
+  return int(j)
+
+def csvWriter(ar_id, lat_lon):
     coordinate = None
     ar_id = str(ar_id)
     if ar_id in lat_lon:
@@ -202,10 +204,10 @@ def command_center():
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         s.bind((ip, 8002))
         s.listen()
-        print("........")
+        print("...")
         conn, addr = s.accept()
         with conn:
-            sleep(2)
+            sleep(3)
             print("connected to {addr}".format(addr = addr))
             goto(curr_pos, destination[sent],conn, addr)
             curr_pos = destination[sent]
@@ -217,16 +219,16 @@ def command_center():
                 dec_mes = enc_mes.decode()
                 # print(dec_mes)
                
-                if(dec_mes == "ready"):
+                if(dec_mes == "ALERT"):
                     while True:
                         live = liveTracking()
                         # print(type(live),"ready", live[0], live[1])
                         if (live[0] >= (stoppingPoints[curr_pos][0]-5) and live[0] <= (stoppingPoints[curr_pos][0]+5)):
                             if(live[1] >= (stoppingPoints[curr_pos][1]-5) and live[1] <= (stoppingPoints[curr_pos][1]+5)):
-                                sendData(conn, addr, emergency)
+                                sendData(conn, addr, "stop")
                                 break
                         
-                elif (dec_mes == "send"):
+                elif (dec_mes == "SEND"):
                     if sent<len(destination):
                         goto(curr_pos, destination[sent], conn, addr)
                         curr_pos = destination[sent]
@@ -234,13 +236,13 @@ def command_center():
                     else:
                         goto(curr_pos,'I', conn, addr)
 
-                elif (dec_mes == "abort"):
+                elif (dec_mes == "HOME"):
                     while True:
                         live = liveTracking()
                         # print(live)
                         if (live[0] >= (stoppingPoints["Q"][0]-10) and live[0] <= (stoppingPoints["Q"][0]+10)):
                             if(live[1] >= (stoppingPoints["Q"][1]-10) and live[1] <= (stoppingPoints["Q"][1]+10)):
-                                sendData(conn, addr, emergency)
+                                sendData(conn, addr, "stop")
                                 print("mission complete")
                                 return 1
 
@@ -251,6 +253,11 @@ def track_bot():
     dist_coef = calib_data["distCoef"]
     r_vectors = calib_data["rVector"]
     t_vectors = calib_data["tVector"]
+
+    coord = {}
+    dist = {}
+
+
 
     while True:
         # global gframe
@@ -263,10 +270,7 @@ def track_bot():
                 print(e)
                 continue
         frame = gframe
-        # print(frame)
-        # rec , frame = cap.read()
-        # if not rec:
-        #     continue
+       
         gray_frame = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
         marker_corners, marker_IDs, reject = aruco.detectMarkers(gray_frame, marker_dict, parameters=param_markers)
 
@@ -274,44 +278,36 @@ def track_bot():
 
         if marker_corners:
 
-            rVec, tVec, _ = aruco.estimatePoseSingleMarkers(marker_corners, MARKER_SIZE, cam_mat, dist_coef)
-            total_markers = range(0, marker_IDs.size)
-
-            # Find the index of the ArUco marker with ID '100'
-            marker_1_index = np.where(marker_IDs == 100)[0]
-
-            if len(marker_1_index) > 0:
-                marker_1_pose = tVec[marker_1_index][0]
-
-                nearest_marker_id = None
-                nearest_marker_distance = float('inf')
-
-                for ids, tVec_i in zip(marker_IDs, tVec):
-                    # Skip the ArUco marker with ID '100'
-                    if not np.array_equal(ids, [100]):  
-                        # Calculate the distance to each other marker
-                        distance = calculate_distance(marker_1_pose[0][0], marker_1_pose[0][1], tVec_i[0][0], tVec_i[0][1])
-
-                        # Update the nearest marker information
-                        if distance < nearest_marker_distance:
-                            nearest_marker_id = ids[0]
-                            
-                            nearest_marker_distance = distance
-                tracker(nearest_marker_id,lat_lon)
-                
-            for ids, corners, i in zip(marker_IDs, marker_corners, total_markers):
-            
+            for corners, ids, _ in zip(marker_corners, marker_IDs, reject):
+      
                 corners = corners.reshape(4, 2)
                 corners = corners.astype(int)
+
                 top_right = corners[0].ravel()
                 top_left = corners[1].ravel()
                 bottom_right = corners[2].ravel()
                 bottom_left = corners[3].ravel()
 
-                # Calculating the distance with only X and Y Coordinates
-                distance = np.sqrt(  tVec[i][0][0] ** 2 + tVec[i][0][1] ** 2 )
-                #cv.putText(frame, f"{round(tVec[i][0][0],1)},{round(tVec[i][0][1],1)} ", bottom_right, cv.FONT_HERSHEY_PLAIN, 1.0, (0, 0, 255), 2, cv.LINE_AA,)
-                
+                center_x = (top_right[0] + top_left[0]) / 2
+                center_y = (top_right[1] + bottom_right[1]) / 2
+                pos_x = int(center_x)
+                pos_y = int(center_y)
+
+                coord[ids[0]] = (pos_x, pos_y)
+
+                # cv.putText(gframe, str(ids[0]), tuple(top_left), cv.FONT_HERSHEY_COMPLEX, 0.5, (255, 255, 255), 2)
+            for i, cord in coord.items():
+                if not i == 100:
+                    if 100 in coord:
+                        dist[i] = calculateDistance(cord, coord[100])
+            sort_dist = sorted(dist, key= lambda a : dist[a])
+            dist = {i:dist[i] for i in sort_dist }  
+            # if [dist.keys()][0]:
+            #     print(type([*dist.values()]))
+            #     print([*dist.values()][0])
+        # if [dist.keys()][0] and [*dist.values()][0] < 18:
+        if [dist.keys()][0]:
+            csvWriter(list(dist.keys())[0], lat_lon)             
                     
                     
 
