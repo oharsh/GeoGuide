@@ -92,8 +92,3 @@ delays are likewise tuned to one set of motors and batteries —
 [docs/hardware.md](docs/hardware.md#timing-constants) explains what each one
 does and which one to reach for first.
 
-## Origin
-
-Built as a four-person team project over the 2023–24 academic year, and since
-reorganised into this form. The commit history before the restructure records
-who wrote what.
