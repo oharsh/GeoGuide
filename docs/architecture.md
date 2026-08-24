@@ -71,9 +71,10 @@ them the plotted position jumps.
 `firmware/vanguard/vanguard.ino` is a three-state machine: `FOLLOW_LINE`,
 `NODE_DETECT`, `STOP`.
 
-Five IR sensors read the line. The middle three handle centring; the outer two
-detect a node — the point where lines cross — which is what advances the route
-string by one character. Each character is one instruction:
+Five IR sensors read the line. The middle three do double duty: read
+individually they keep the robot centred, but when `s2`, `s3` and `s4` all read
+the line at once, the robot is straddling a crossing line — a node. That is the
+only event that advances the route string. Each character is one instruction:
 
 | Char | Meaning |
 | --- | --- |
