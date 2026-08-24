@@ -1,62 +1,99 @@
-# e-Yantra Robotics Competition 2024
+# GeoGuide
 
-Team Name: GG_1667
-Theme Alloted: GeoGuide (GG)
-Welcome to our repository for the e-Yantra Robotics Competition!
+An autonomous line-following robot that navigates a scale arena, identifies
+disaster-response scenes printed at five locations, visits them in priority
+order, and plots its own position on a live map as it goes.
 
-## About the Repository
+The robot itself is deliberately simple — an ESP32 that follows a black line and
+does what it's told at each junction. Everything that requires knowing where it
+is happens on a laptop watching the arena through an overhead camera.
 
-This repository houses our code, documentation, and progress updates for the e-Yantra Robotics Competition. It serves as a central hub for our team to collaborate, share knowledge, and track our development efforts.
+## How it works, briefly
 
-## Key Features
+1. **Detect the events.** A camera frame of the arena is thresholded and
+   contoured to find the five printed images. Each is classified by a fine-tuned
+   InceptionV3 model into one of five classes — fire, destroyed buildings,
+   humanitarian aid, military vehicles, combat.
+2. **Plan the route.** The locations are sorted by priority and the robot is
+   sent a turn-by-turn string for each leg over a TCP socket.
+3. **Follow and watch.** The robot follows the line and counts junctions. It
+   never decides it has arrived — the overhead camera tracks the ArUco marker on
+   its roof and sends `STOP` when it's on the target square.
+4. **Map it.** Every frame, the marker nearest the robot is looked up in a
+   coordinate table and written to a CSV that QGIS polls, animating the robot on
+   a georeferenced map of the arena.
 
-Shared Codebase: Contains all the code related to our robot's design, control, and task execution.
-Task Updates: Features daily or regular updates on individual tasks, challenges, and breakthroughs.
-Documentation: Includes essential documents such as task guidelines, design schematics, and user manuals.
+[docs/architecture.md](docs/architecture.md) has the full picture.
 
-## Team Members
+## Layout
 
-**Abhishek Ranjan** : [abhishekranjancodes](https://github.com/abhishekranjancodes)
+```
+control_center/    Host-side Python: event detection, mission control, tracking
+  config.py          Paths, network, arena geometry, route table
+  event_detection.py Classify what's at each arena location (run first)
+  control_center.py  Run the mission and drive the live map
+firmware/
+  vanguard/        ESP32 line-follower firmware
+  hardware_tests/  Bench sketches for the WiFi link and the motor/IR wiring
+vision/            Camera calibration and standalone ArUco utilities
+training/          Fine-tune the event classifier
+tools/             Interactive socket test for the host↔robot link
+data/              Calibration matrix, datasets, QGIS layers, eval sets
+docs/              Architecture, hardware, references
+models/            Trained weights (not tracked — see models/README.md)
+```
 
-**Arijit Goswami**  : [arijitgo](https://github.com/ArijitGo)
+## Setup
 
-**Harsh Yadav**     : [oharsh](https://github.com/oharsh)
+```bash
+conda env create -f environment.yml
+conda activate geoguide
+```
 
-**Gaurav Singh**    : [thegauravsngh](https://github.com/thegauravsngh)
+Before the first run you need three things that aren't in the repo:
 
-## Getting Started
+| What | Where it goes | How to get it |
+| --- | --- | --- |
+| Trained weights | `models/object_classification.h5` | [models/README.md](models/README.md) |
+| Marker coordinates | `data/qgis/lat_long.csv` | [data/qgis/README.md](data/qgis/README.md) |
+| WiFi credentials | `firmware/vanguard/secrets.h` | Copy `secrets.example.h` and fill it in |
 
-Clone this repository to your local machine.
-Navigate to the project directory.
-Install any required dependencies (refer to the requirements.txt and environment.yml file, if applicable).
-Follow the instructions in the docs folder for setting up the development environment and running the code.
+Then calibrate the overhead camera — see
+[docs/hardware.md](docs/hardware.md#camera-calibration).
 
-## Contribution Guidelines (Which we never follow 😅)
+## Running
 
-Fork this repository to create a copy on your own GitHub account.
-Create a new branch for your changes.
-Make your changes and commit them with clear and descriptive commit messages.
-Push your branch to your forked repository.
-Create a pull request to merge your changes into the main repository.
+Flash `firmware/vanguard/vanguard.ino` to the ESP32, then on the host:
 
-## Communication
+```bash
+# 1. Identify what's at each arena location. Press 'q' to take the snapshot.
+python control_center/event_detection.py
 
-Use clear and concise language in your commit messages and pull requests.
-Reference any relevant issues or pull requests in your comments.
-Be open to feedback and suggestions from other team members.
+# 2. Run the mission. Waits for the robot to connect, then drives it.
+python control_center/control_center.py
+```
 
-## Tasks and Updates
+Both scripts default to camera index 2 and host IP `192.168.137.181`. Override
+with environment variables rather than editing the source:
 
-Check the tasks folder for a breakdown of individual tasks and their status.
+```bash
+GEOGUIDE_CAMERA=0 GEOGUIDE_HOST_IP=192.168.1.20 python control_center/control_center.py
+```
 
-## Additional Information
+Everything else configurable — arena crops, stopping-point coordinates, the
+route table — lives in `control_center/config.py`.
 
-Competition Theme: GeoGuide
+## Tuning notes
 
-Hardware Platform: Arduino IDE, QGIS
+The arena coordinates in `config.py` (`STOPPING_POINTS`, `STATIC_MARKERS`) are
+pixel positions in the cropped camera frame. They are specific to one camera
+mount and will need re-measuring if the camera moves. The firmware's turn
+delays are likewise tuned to one set of motors and batteries —
+[docs/hardware.md](docs/hardware.md#timing-constants) explains what each one
+does and which one to reach for first.
 
-Programming Language: Python, Machine Learning, Deep Learning, Open CV, Embedded C, C++ 
+## Origin
 
-## Let's Collaborate!
-
-We're excited to work together and create an awesome robot! And most important of them all to learn new things through these challenges. I wish each one of us All THE BEST for the challenges ahead.
+Built as a four-person team project over the 2023–24 academic year, and since
+reorganised into this form. The commit history before the restructure records
+who wrote what.
