@@ -1,0 +1,1430 @@
+<title>GeoGuide Blueprint</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+
+<style>
+:root{
+  --paper:#EDEFF2;
+  --surface:#FFFFFF;
+  --sunk:#E3E7EB;
+  --ink:#10151A;
+  --muted:#5A646E;
+  --faint:#828C96;
+  --rule:#CBD2D9;
+  --hair:#DDE2E7;
+  --accent:#0A7D53;
+  --accent-soft:#0A7D5314;
+  --flag:#A24A17;
+  --flag-soft:#A24A1714;
+  --shadow:0 1px 2px rgba(16,21,26,.06);
+
+  --f-display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --f-body:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+
+  --measure:68ch;
+  --rail:250px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0D1116;
+    --surface:#151A20;
+    --sunk:#1B2128;
+    --ink:#DFE4E9;
+    --muted:#98A3AD;
+    --faint:#6E7983;
+    --rule:#2A323B;
+    --hair:#222A32;
+    --accent:#45CF95;
+    --accent-soft:#45CF9518;
+    --flag:#E0925A;
+    --flag-soft:#E0925A18;
+    --shadow:0 1px 2px rgba(0,0,0,.4);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0D1116;
+  --surface:#151A20;
+  --sunk:#1B2128;
+  --ink:#DFE4E9;
+  --muted:#98A3AD;
+  --faint:#6E7983;
+  --rule:#2A323B;
+  --hair:#222A32;
+  --accent:#45CF95;
+  --accent-soft:#45CF9518;
+  --flag:#E0925A;
+  --flag-soft:#E0925A18;
+  --shadow:0 1px 2px rgba(0,0,0,.4);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--f-body);
+  font-size:17px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:var(--f-display);text-wrap:balance;margin:0}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent-soft)}
+a:hover{border-bottom-color:currentColor}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+code{font-family:var(--f-mono);font-size:.85em;background:var(--sunk);padding:.1em .35em;border-radius:2px}
+
+/* ---------- shell ---------- */
+.shell{max-width:1180px;margin:0 auto;padding:0 28px;display:grid;grid-template-columns:var(--rail) minmax(0,1fr);gap:56px;align-items:start}
+.rail{position:sticky;top:0;max-height:100vh;overflow-y:auto;padding:40px 0;font-family:var(--f-mono);font-size:12px;line-height:1.45}
+.rail-title{font-family:var(--f-display);font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-bottom:16px}
+.rail a{display:grid;grid-template-columns:22px 1fr;gap:8px;padding:5px 0;color:var(--muted);border:0}
+.rail a .n{color:var(--faint);font-variant-numeric:tabular-nums}
+.rail a:hover{color:var(--ink)}
+.rail a.on{color:var(--accent)}
+.rail a.on .n{color:var(--accent)}
+main{padding:40px 0 120px;min-width:0}
+
+/* ---------- masthead ---------- */
+.mast{border-bottom:1px solid var(--rule);padding-bottom:36px;margin-bottom:52px}
+.eyebrow{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+.mast h1{font-size:clamp(38px,6vw,60px);font-weight:800;letter-spacing:-.03em;line-height:1.02;margin:14px 0 0;max-width:16ch}
+.mast .lede{font-size:20px;color:var(--muted);max-width:60ch;margin:20px 0 0}
+.meta{display:flex;flex-wrap:wrap;gap:8px 28px;margin-top:26px;font-family:var(--f-mono);font-size:11.5px;color:var(--faint);letter-spacing:.04em}
+.meta b{color:var(--muted);font-weight:500}
+
+/* ---------- sections ---------- */
+section{margin:0 0 76px;scroll-margin-top:24px}
+.part{display:flex;align-items:baseline;gap:14px;margin-bottom:8px}
+.part .num{font-family:var(--f-mono);font-size:12px;color:var(--accent);letter-spacing:.1em}
+.part .kick{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+section > h2{font-size:clamp(27px,3.4vw,34px);font-weight:700;letter-spacing:-.02em;line-height:1.14;max-width:22ch;margin-bottom:6px}
+.standfirst{font-size:18.5px;color:var(--muted);max-width:var(--measure);margin:14px 0 30px;padding-bottom:22px;border-bottom:1px solid var(--hair)}
+h3{font-size:20px;font-weight:700;letter-spacing:-.012em;margin:40px 0 12px;max-width:34ch}
+h4{font-size:15px;font-weight:700;margin:26px 0 8px;font-family:var(--f-display);letter-spacing:.004em}
+p,ul,ol{max-width:var(--measure)}
+p{margin:0 0 17px}
+ul,ol{margin:0 0 17px;padding-left:1.15em}
+li{margin:0 0 8px}
+li::marker{color:var(--faint)}
+strong{font-weight:600}
+.lead-in{font-family:var(--f-mono);font-size:.82em;text-transform:uppercase;letter-spacing:.07em;color:var(--ink);font-weight:500}
+
+/* ---------- detection-box header motif ---------- */
+.det{position:relative;border:1.5px solid var(--accent);padding:26px 24px 22px;margin:34px 0 30px;max-width:var(--measure)}
+.det::before{
+  content:attr(data-tag);position:absolute;top:-1.5px;left:-1.5px;
+  transform:translateY(-100%);
+  background:var(--accent);color:var(--surface);
+  font-family:var(--f-mono);font-size:10.5px;letter-spacing:.09em;
+  padding:2px 7px;text-transform:uppercase;font-weight:500;
+}
+.det > :last-child{margin-bottom:0}
+.det p{max-width:none}
+
+/* ---------- chosen / why / instead ---------- */
+.decide{border-top:1px solid var(--rule);margin:26px 0 30px;max-width:var(--measure)}
+.row{display:grid;grid-template-columns:96px minmax(0,1fr);gap:20px;padding:15px 0;border-bottom:1px solid var(--hair);align-items:start}
+.row > .k{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);padding-top:5px}
+.row.pick > .k{color:var(--accent)}
+.row > .v{min-width:0}
+.row > .v > :last-child{margin-bottom:0}
+.row p{max-width:none;margin:0 0 10px}
+.alts{list-style:none;padding:0;margin:0;max-width:none}
+.alts li{margin:0 0 11px;padding-left:16px;position:relative}
+.alts li::before{content:"";position:absolute;left:0;top:.62em;width:7px;height:1px;background:var(--rule)}
+.alts li:last-child{margin-bottom:0}
+.alts b{font-family:var(--f-display);font-weight:600;font-size:.94em}
+
+/* ---------- flag ---------- */
+.flag{border-left:2px solid var(--flag);background:var(--flag-soft);padding:16px 20px;margin:26px 0;max-width:var(--measure)}
+.flag .k{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--flag);display:block;margin-bottom:7px}
+.flag p{max-width:none;margin:0 0 11px}
+.flag > :last-child{margin-bottom:0}
+
+.note{border-left:2px solid var(--rule);padding:2px 0 2px 20px;margin:24px 0;color:var(--muted);max-width:var(--measure);font-size:16px}
+.note > :last-child{margin-bottom:0}
+.note p{max-width:none}
+
+/* ---------- code ---------- */
+pre{
+  font-family:var(--f-mono);font-size:13px;line-height:1.6;
+  background:var(--surface);border:1px solid var(--hair);
+  padding:16px 18px;overflow-x:auto;margin:20px 0;max-width:var(--measure);
+  box-shadow:var(--shadow);
+}
+pre code{background:none;padding:0;font-size:inherit}
+.cap{font-family:var(--f-mono);font-size:11px;color:var(--faint);margin:-12px 0 22px;letter-spacing:.03em;max-width:var(--measure)}
+
+/* ---------- tables ---------- */
+.tw{overflow-x:auto;margin:22px 0;max-width:var(--measure);border:1px solid var(--hair);background:var(--surface);box-shadow:var(--shadow)}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--hair);vertical-align:top}
+th{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--faint);font-weight:500;background:var(--sunk);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td code{font-size:.84em;white-space:nowrap}
+.num-col{font-variant-numeric:tabular-nums;font-family:var(--f-mono);font-size:.9em}
+
+/* ---------- figures ---------- */
+figure{margin:32px 0;max-width:var(--measure)}
+figure.wide{max-width:none}
+.fw{overflow-x:auto;border:1px solid var(--hair);background:var(--surface);padding:22px 20px;box-shadow:var(--shadow)}
+figure svg{display:block;max-width:100%;height:auto;margin:0 auto;color:var(--ink)}
+figcaption{font-family:var(--f-mono);font-size:11.5px;line-height:1.55;color:var(--faint);margin-top:11px;letter-spacing:.02em}
+.svg-fill-s{fill:var(--surface)}
+.svg-fill-k{fill:var(--sunk)}
+.svg-ink{fill:var(--ink)}
+.svg-mut{fill:var(--muted)}
+.svg-faint{fill:var(--faint)}
+.svg-acc{fill:var(--accent)}
+.svg-flag{fill:var(--flag)}
+.s-ink{stroke:var(--ink)}
+.s-rule{stroke:var(--rule)}
+.s-acc{stroke:var(--accent)}
+.s-flag{stroke:var(--flag)}
+text{font-family:var(--f-mono);font-size:11px}
+text.lbl{font-family:var(--f-display);font-weight:600;font-size:12px}
+
+/* ---------- misc ---------- */
+.kbd{font-family:var(--f-mono);font-size:.82em;border:1px solid var(--rule);border-bottom-width:2px;padding:1px 5px;border-radius:3px;background:var(--surface)}
+.end{border-top:1px solid var(--rule);margin-top:72px;padding-top:26px;font-family:var(--f-mono);font-size:12px;color:var(--faint);max-width:var(--measure)}
+hr{border:0;border-top:1px solid var(--hair);margin:36px 0;max-width:var(--measure)}
+
+@media (max-width:960px){
+  .shell{grid-template-columns:1fr;gap:0;padding:0 22px}
+  .rail{position:static;max-height:none;padding:28px 0 0;border-bottom:1px solid var(--rule)}
+  .rail-inner{columns:2;column-gap:24px}
+  main{padding-top:30px}
+  body{font-size:16.5px}
+}
+@media (max-width:560px){
+  .rail-inner{columns:1}
+  .row{grid-template-columns:1fr;gap:5px}
+  .row > .k{padding-top:0}
+  .shell{padding:0 17px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+<div class="shell">
+<nav class="rail" aria-label="Contents">
+  <div class="rail-title">Blueprint</div>
+  <div class="rail-inner" id="toc">
+    <a href="#s0"><span class="n">00</span><span>The shape of the thing</span></a>
+    <a href="#s1"><span class="n">01</span><span>Knowing where you are</span></a>
+    <a href="#s2"><span class="n">02</span><span>The camera as instrument</span></a>
+    <a href="#s3"><span class="n">03</span><span>Finding the events</span></a>
+    <a href="#s4"><span class="n">04</span><span>Naming the events</span></a>
+    <a href="#s5"><span class="n">05</span><span>The robot itself</span></a>
+    <a href="#s6"><span class="n">06</span><span>The conversation</span></a>
+    <a href="#s7"><span class="n">07</span><span>Three things at once</span></a>
+    <a href="#s8"><span class="n">08</span><span>Deciding where to go</span></a>
+    <a href="#s9"><span class="n">09</span><span>Putting it on a map</span></a>
+    <a href="#s10"><span class="n">10</span><span>Holding it together</span></a>
+    <a href="#s11"><span class="n">11</span><span>Rebuilding it today</span></a>
+    <a href="#sa"><span class="n">A</span><span>Every part, listed</span></a>
+    <a href="#sb"><span class="n">B</span><span>A path through it</span></a>
+  </div>
+</nav>
+
+<main>
+<header class="mast">
+  <div class="eyebrow">Project blueprint &middot; robotics, vision, machine learning</div>
+  <h1>Everything in GeoGuide, and why it's there</h1>
+  <p class="lede">A line-following robot, an overhead camera, and a laptop that ties them together. This walks every technology in the stack: what it does, why this project reached for it, what else could have been used, and where the current build is wrong.</p>
+  <div class="meta">
+    <span><b>Scope</b> &nbsp;12 parts + 2 appendices</span>
+    <span><b>Stack</b> &nbsp;OpenCV &middot; TensorFlow &middot; ESP32 &middot; TCP &middot; QGIS</span>
+    <span><b>Assumes</b> &nbsp;you can read Python and C</span>
+  </div>
+</header>
+
+<section id="s0">
+  <div class="part"><span class="num">00</span><span class="kick">Orientation</span></div>
+  <h2>The shape of the thing</h2>
+  <p class="standfirst">Before any single technology makes sense, you need the one architectural decision everything else hangs off: the robot does not know where it is, and never finds out.</p>
+
+  <p>A scale arena sits on a table. Printed on it are five images of disaster scenes — a fire, a collapsed building, an aid camp, a military vehicle, a firefight — at five lettered locations. A black line loops between them. A small two-wheeled robot has to work out what is at each location, visit them in order of urgency, and come home, while its position is drawn live on a map.</p>
+
+  <p>Three things cooperate. An <strong>ESP32 robot</strong> that can follow a black line and turn at junctions, but has no odometry, no compass, no map and no memory of how far it has come. A <strong>laptop</strong> with a camera looking down at the whole arena, which can see exactly where the robot is but cannot touch it. And a <strong>TCP socket</strong> between them carrying short text strings.</p>
+
+  <figure class="wide">
+    <div class="fw">
+      <svg viewBox="0 0 860 340" role="img" aria-label="The overhead camera feeds three host threads; the host sends route strings to the robot and the robot reports status back, with the camera rather than the robot deciding when it has arrived.">
+        <defs>
+          <marker id="a0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+          </marker>
+          <marker id="a0g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="svg-acc"/>
+          </marker>
+        </defs>
+
+        <!-- arena + camera -->
+        <rect x="24" y="188" width="176" height="112" class="svg-fill-k s-rule" stroke-width="1"/>
+        <text x="112" y="288" text-anchor="middle" class="svg-faint" font-size="10">ARENA</text>
+        <circle cx="70" cy="238" r="7" class="svg-fill-s s-ink" stroke-width="1.5"/>
+        <text x="70" y="262" text-anchor="middle" class="svg-mut" font-size="9">robot</text>
+        <rect x="130" y="212" width="17" height="17" class="s-ink svg-fill-s" stroke-width="1"/>
+        <rect x="152" y="246" width="17" height="17" class="s-ink svg-fill-s" stroke-width="1"/>
+        <text x="160" y="212" text-anchor="middle" class="svg-faint" font-size="9">events</text>
+
+        <rect x="60" y="40" width="104" height="42" class="svg-fill-s s-ink" stroke-width="1.5"/>
+        <text x="112" y="66" text-anchor="middle" class="lbl svg-ink">camera</text>
+        <line x1="112" y1="82" x2="112" y2="182" class="s-ink" stroke-width="1.5" marker-end="url(#a0)"/>
+        <text x="122" y="136" class="svg-mut">sees all</text>
+
+        <!-- host -->
+        <rect x="286" y="24" width="238" height="276" class="s-rule" stroke-width="1" fill="none" stroke-dasharray="3 3"/>
+        <text x="405" y="16" text-anchor="middle" class="svg-faint" font-size="10">HOST &mdash; LAPTOP</text>
+
+        <rect x="306" y="42" width="198" height="40" class="svg-fill-k s-rule" stroke-width="1"/>
+        <text x="405" y="66" text-anchor="middle" class="lbl svg-ink">grab_frames</text>
+
+        <line x1="405" y1="82" x2="405" y2="104" class="s-rule" stroke-width="1" marker-end="url(#a0)"/>
+        <text x="415" y="98" class="svg-faint" font-size="9">shared frame</text>
+
+        <rect x="306" y="106" width="198" height="46" class="svg-fill-s s-acc" stroke-width="1.5"/>
+        <text x="405" y="129" text-anchor="middle" class="lbl svg-ink">command_center</text>
+        <text x="405" y="144" text-anchor="middle" class="svg-mut" font-size="9.5">plans &middot; sends &middot; stops</text>
+
+        <rect x="306" y="166" width="198" height="46" class="svg-fill-s s-rule" stroke-width="1"/>
+        <text x="405" y="189" text-anchor="middle" class="lbl svg-ink">track_robot</text>
+        <text x="405" y="204" text-anchor="middle" class="svg-mut" font-size="9.5">nearest marker &rarr; lat/lon</text>
+
+        <rect x="306" y="238" width="198" height="40" class="svg-fill-k s-rule" stroke-width="1"/>
+        <text x="405" y="262" text-anchor="middle" class="lbl svg-ink">live.csv &rarr; QGIS</text>
+        <line x1="405" y1="212" x2="405" y2="236" class="s-rule" stroke-width="1" marker-end="url(#a0)"/>
+
+        <line x1="200" y1="62" x2="304" y2="62" class="s-ink" stroke-width="1.5" marker-end="url(#a0)"/>
+
+        <!-- robot -->
+        <rect x="620" y="106" width="200" height="46" class="svg-fill-s s-ink" stroke-width="1.5"/>
+        <text x="720" y="129" text-anchor="middle" class="lbl svg-ink">Vanguard</text>
+        <text x="720" y="144" text-anchor="middle" class="svg-mut" font-size="9.5">follows line, counts nodes</text>
+
+        <line x1="524" y1="120" x2="618" y2="120" class="s-acc" stroke-width="1.5" marker-end="url(#a0g)"/>
+        <text x="571" y="112" text-anchor="middle" class="svg-acc" font-size="9.5">route "TSLF"</text>
+        <line x1="618" y1="140" x2="526" y2="140" class="s-ink" stroke-width="1.5" marker-end="url(#a0)"/>
+        <text x="571" y="156" text-anchor="middle" class="svg-mut" font-size="9.5">"ALERT" / "SEND"</text>
+
+        <path d="M720 152 L720 226 L112 226 L112 190" class="s-rule" stroke-width="1" fill="none" stroke-dasharray="4 3"/>
+        <text x="700" y="244" text-anchor="end" class="svg-faint" font-size="9.5">robot is visible to the camera, not to itself</text>
+      </svg>
+    </div>
+    <figcaption>The loop that matters runs camera &rarr; host &rarr; robot. The robot reports that it is close; the host looks at the frame and replies STOP. Arrival is decided by the thing that can see, not the thing that moves.</figcaption>
+  </figure>
+
+  <h3>The one idea to take away</h3>
+  <p>Almost every mobile robot has to answer three questions: <em>where am I</em>, <em>where should I go</em>, and <em>how do I get there</em>. The conventional answer puts all three on the robot — wheel encoders and an IMU for the first, a stored map and a planner for the second, a motor controller for the third. That robot is expensive, and its position estimate drifts.</p>
+
+  <p>This project splits them across the network. The robot answers only the third question, and answers it badly on purpose: follow the black line, and at each junction do whatever the next character in the string says. It has no idea whether it has travelled ten centimetres or two metres. The first two questions live on the laptop, which has something the robot never will — a view of the entire arena at once.</p>
+
+  <div class="det" data-tag="the trade">
+    <p>You give up autonomy — cut the WiFi and the robot is a brick — and you gain a position estimate that never drifts, on hardware that costs about the price of a takeaway. For a robot that operates inside one camera's field of view, that is an excellent trade. For a robot that has to leave the room, it is a non-starter.</p>
+  </div>
+
+  <p>Nearly every "why is it done this way" in the rest of this document traces back to that split. Hold onto it.</p>
+
+  <h3>The signal path, end to end</h3>
+  <ol>
+    <li><span class="lead-in">Perceive, once.</span> <code>event_detection.py</code> takes one high-resolution frame, finds the five printed images by contour, and classifies each with a neural network. Result: a dictionary like <code>{"A": "Fire", "C": "Combat", …}</code>, sorted by urgency, saved to disk. <em>Parts 03 and 04.</em></li>
+    <li><span class="lead-in">Plan.</span> <code>control_center.py</code> reads that dictionary and walks the locations in order, looking each leg up in a hard-coded table of thirty route strings. <em>Part 08.</em></li>
+    <li><span class="lead-in">Act.</span> The route string goes over TCP. The robot's five infrared sensors keep it on the line; junctions advance it through the string one character at a time. <em>Parts 05 and 06.</em></li>
+    <li><span class="lead-in">Perceive, continuously.</span> Meanwhile the camera tracks the ArUco marker on the robot's roof, decides when it has reached the target, and publishes its position to a map. <em>Parts 01, 02, 07 and 09.</em></li>
+  </ol>
+
+  <h3>How to read this</h3>
+  <p>Each part takes one technology and runs the same three beats — <span class="lead-in">chosen</span> what the project actually does, <span class="lead-in">why</span> the reasoning behind it, <span class="lead-in">instead</span> the alternatives and when you'd reach for them. Where the current build has a real defect, it is called out in an orange box. There are four of those, and they are the most educational things here.</p>
+</section>
+
+<section id="s1">
+  <div class="part"><span class="num">01</span><span class="kick">Localization</span></div>
+  <h2>Knowing where you are, when you can't feel it</h2>
+  <p class="standfirst">A camera sees pixels, not identities. Fiducial markers are how you turn "there is a dark blob at (312, 205)" into "robot 100 is at (312, 205), rotated 14 degrees."</p>
+
+  <h3>Why markers at all</h3>
+  <p>Ask a camera to find a small robot on a cluttered arena and you are asking a hard, fragile question. Lighting changes, the robot is partly occluded by its own shadow, and anything else dark and roughly robot-shaped is a false positive. Ask it instead to find a <strong>fiducial marker</strong> — a pattern designed from scratch to be unmistakable — and the problem becomes almost trivial.</p>
+
+  <p>A fiducial is a visual barcode with three properties a natural object never has. It is <em>high contrast</em>, so a threshold separates it from anything. It is <em>square with a solid border</em>, so its four corners give you an exact pose, not just a centre. And it carries <em>error-correcting bits</em>, so a partial misread is detected rather than silently returning the wrong ID.</p>
+
+  <h3>What ArUco actually is</h3>
+  <p>An ArUco marker is a black square containing a grid of black and white cells. This project uses <code>DICT_4X4_250</code>: a 4&times;4 interior grid — 16 bits — from a dictionary of 250 pre-selected markers, surrounded by a one-cell black border.</p>
+
+  <p>16 bits could encode 65,536 patterns. The dictionary keeps only 250, and that discarding is the whole point. The 250 are chosen so that any two are far apart in <strong>Hamming distance</strong> — the number of bit flips needed to turn one into the other. If every valid marker differs from every other in at least, say, 6 positions, then a marker read with 2 bits wrong is still unambiguously closer to its true identity than to any other, and the decoder repairs it. Read 3 wrong and it reports failure rather than lying to you. Fewer usable IDs, bought in exchange for near-zero false detections.</p>
+
+  <p>The dictionary is also rotation-aware: the 250 patterns are picked so none is a 90&deg;, 180&deg; or 270&deg; rotation of another. That is what lets the detector recover <em>orientation</em>, not just position, from a square that looks the same from four sides.</p>
+
+  <figure class="wide">
+    <div class="fw">
+      <svg viewBox="0 0 880 190" role="img" aria-label="ArUco detection runs five stages: adaptive threshold, contour extraction, quadrilateral filtering, perspective unwarp to a square, then bit sampling and dictionary lookup.">
+        <defs>
+          <marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+          </marker>
+        </defs>
+
+        <!-- 1 grayscale frame -->
+        <rect x="14" y="34" width="112" height="84" class="svg-fill-k s-rule" stroke-width="1"/>
+        <path d="M46 58 l30 -6 l7 26 l-30 7 z" class="svg-ink" opacity=".85"/>
+        <text x="70" y="134" text-anchor="middle" class="svg-mut" font-size="10">frame</text>
+        <text x="70" y="26" text-anchor="middle" class="svg-faint" font-size="9">1</text>
+        <line x1="130" y1="76" x2="158" y2="76" class="s-rule" stroke-width="1.2" marker-end="url(#a1)"/>
+
+        <!-- 2 threshold -->
+        <rect x="162" y="34" width="112" height="84" class="svg-fill-s s-rule" stroke-width="1"/>
+        <path d="M194 58 l30 -6 l7 26 l-30 7 z" class="svg-ink"/>
+        <text x="218" y="134" text-anchor="middle" class="svg-mut" font-size="10">threshold</text>
+        <text x="218" y="26" text-anchor="middle" class="svg-faint" font-size="9">2</text>
+        <line x1="278" y1="76" x2="306" y2="76" class="s-rule" stroke-width="1.2" marker-end="url(#a1)"/>
+
+        <!-- 3 contour / quad -->
+        <rect x="310" y="34" width="112" height="84" class="svg-fill-s s-rule" stroke-width="1"/>
+        <path d="M342 58 l30 -6 l7 26 l-30 7 z" fill="none" class="s-acc" stroke-width="2"/>
+        <circle cx="342" cy="58" r="2.6" class="svg-acc"/><circle cx="372" cy="52" r="2.6" class="svg-acc"/>
+        <circle cx="379" cy="78" r="2.6" class="svg-acc"/><circle cx="349" cy="85" r="2.6" class="svg-acc"/>
+        <text x="366" y="134" text-anchor="middle" class="svg-mut" font-size="10">4 corners</text>
+        <text x="366" y="26" text-anchor="middle" class="svg-faint" font-size="9">3</text>
+        <line x1="426" y1="76" x2="454" y2="76" class="s-rule" stroke-width="1.2" marker-end="url(#a1)"/>
+        <text x="440" y="66" text-anchor="middle" class="svg-faint" font-size="8.5">homography</text>
+
+        <!-- 4 unwarped -->
+        <rect x="458" y="34" width="112" height="84" class="svg-fill-s s-rule" stroke-width="1"/>
+        <rect x="490" y="46" width="48" height="60" class="svg-ink"/>
+        <rect x="498" y="55" width="8" height="10" fill="#fff"/><rect x="514" y="55" width="8" height="10" fill="#fff"/>
+        <rect x="506" y="66" width="8" height="10" fill="#fff"/><rect x="522" y="66" width="8" height="10" fill="#fff"/>
+        <rect x="498" y="77" width="8" height="10" fill="#fff"/><rect x="522" y="88" width="8" height="10" fill="#fff"/>
+        <text x="514" y="134" text-anchor="middle" class="svg-mut" font-size="10">unwarped</text>
+        <text x="514" y="26" text-anchor="middle" class="svg-faint" font-size="9">4</text>
+        <line x1="574" y1="76" x2="602" y2="76" class="s-rule" stroke-width="1.2" marker-end="url(#a1)"/>
+
+        <!-- 5 bits -->
+        <rect x="606" y="34" width="112" height="84" class="svg-fill-s s-rule" stroke-width="1"/>
+        <text x="662" y="62" text-anchor="middle" class="svg-ink" font-size="10">0110 1001</text>
+        <text x="662" y="78" text-anchor="middle" class="svg-ink" font-size="10">1010 0101</text>
+        <text x="662" y="96" text-anchor="middle" class="svg-faint" font-size="9">16 bits</text>
+        <text x="662" y="134" text-anchor="middle" class="svg-mut" font-size="10">sample cells</text>
+        <text x="662" y="26" text-anchor="middle" class="svg-faint" font-size="9">5</text>
+        <line x1="722" y1="76" x2="750" y2="76" class="s-rule" stroke-width="1.2" marker-end="url(#a1)"/>
+
+        <!-- 6 id -->
+        <rect x="754" y="50" width="110" height="52" class="svg-fill-s s-acc" stroke-width="1.8"/>
+        <text x="809" y="72" text-anchor="middle" class="lbl svg-ink">id 100</text>
+        <text x="809" y="90" text-anchor="middle" class="svg-mut" font-size="9.5">+ rotation</text>
+        <text x="809" y="134" text-anchor="middle" class="svg-faint" font-size="9.5">dictionary match</text>
+
+        <text x="440" y="172" text-anchor="middle" class="svg-faint" font-size="10">every stage is a cheap filter &mdash; most candidates die at stage 3</text>
+      </svg>
+    </div>
+    <figcaption>What <code>aruco.detectMarkers()</code> does internally. Nothing here is learned; it is five deterministic geometric steps, which is why it runs at camera framerate on a laptop CPU.</figcaption>
+  </figure>
+
+  <h3>How this project uses it</h3>
+  <p>Marker <strong>100</strong> is glued flat to the robot's roof. Markers along the driving line, plus seven extras listed as <code>STATIC_MARKERS</code> in <code>config.py</code>, are stuck to the arena itself. Every frame, <code>track_robot</code> detects everything visible, measures the pixel distance from each arena marker to marker 100, and takes the closest one within 80 pixels.</p>
+
+  <p>Notice what that does. The robot's reported position is never its actual pixel position — it is <em>the identity of the nearest fixed marker</em>. The output is not "the robot is at (312, 205)" but "the robot is nearest marker 43," which is then looked up in a table to get a map coordinate.</p>
+
+  <div class="decide">
+    <div class="row pick"><span class="k">Chosen</span><div class="v"><p>Snap to the nearest known marker, rather than reporting the robot's raw position.</p></div></div>
+    <div class="row"><span class="k">Why</span><div class="v">
+      <p>It quantises away jitter. A raw pixel position wobbles a few pixels every frame from sensor noise and thresholding, and on a map that reads as a robot vibrating in place. Snapping to discrete markers gives clean, stable hops. It also means the mapping from arena to world coordinates only has to be measured once, per marker, by hand — no calibration maths at run time.</p>
+      <p>The seven hard-coded static markers exist because the driving line has stretches with no marker nearby. Without them the reported position jumps a long way, or the nearest-marker distance exceeds 80 pixels and the position freezes entirely.</p>
+    </div></div>
+    <div class="row"><span class="k">Instead</span><div class="v"><ul class="alts">
+      <li><b>AprilTag</b> — the other major fiducial family, out of the University of Michigan. Better detection at long range and steeper angles, more robust to partial occlusion, and generally the choice in serious robotics. ArUco wins here purely because it ships inside OpenCV with no extra dependency.</li>
+      <li><b>ChArUco board</b> — a chessboard with ArUco markers in the white squares. Combines chessboard corner accuracy with ArUco's identity, and is strictly better for <em>calibration</em>. Overkill for tracking one moving robot.</li>
+      <li><b>QR / DataMatrix</b> — designed to carry many bytes, not to be located precisely. Wrong tool: you want 8 bits and sub-pixel corners, not 300 bytes and a fragile read.</li>
+      <li><b>Retroreflective motion capture</b> (OptiTrack, Vicon) — millimetre accuracy at hundreds of hertz, and what a real robotics lab uses. Also thousands of pounds and a rig of synchronised cameras.</li>
+      <li><b>UWB or ultrasonic beacons</b> — radio time-of-flight trilateration. Works without line of sight and outside a camera's view, at maybe 10&ndash;30&nbsp;cm accuracy. Better for a room-scale robot, far worse for a table-scale one.</li>
+      <li><b>Wheel odometry + IMU</b> — the classic on-board answer. Cheap and self-contained, but it integrates error: small wheel slips accumulate into unbounded drift, so it always needs periodic correction from something absolute.</li>
+      <li><b>Markerless tracking</b> — colour thresholding, background subtraction, or a small object detector trained on the robot. No markers to print, but every lighting change becomes your problem.</li>
+    </ul></div></div>
+  </div>
+
+  <div class="flag">
+    <span class="k">Where this build is brittle</span>
+    <p>The 80-pixel radius and every coordinate in <code>STOPPING_POINTS</code> are measured in the cropped camera frame. Nudge the camera mount by a centimetre and all of it silently becomes wrong — the robot will stop in the wrong places, and nothing in the code will complain. A homography from arena corners to a canonical frame (Part 02) would make these numbers survive a camera bump.</p>
+  </div>
+</section>
+
+<section id="s2">
+  <div class="part"><span class="num">02</span><span class="kick">Camera geometry</span></div>
+  <h2>The camera as a measuring instrument</h2>
+  <p class="standfirst">A photograph is a projection, and a lens is not a perfect one. Calibration is how you recover the numbers that let you treat a camera as a ruler.</p>
+
+  <h3>The pinhole model</h3>
+  <p>The idealised camera is a box with a single infinitesimal hole. A point in the world at <code>(X, Y, Z)</code> projects to the image at <code>(fX/Z + cx, fY/Z + cy)</code>. Four numbers describe it, and together they form the <strong>intrinsic matrix</strong>:</p>
+
+<pre><code>K = [ fx   0   cx ]
+    [  0  fy   cy ]
+    [  0   0    1 ]</code></pre>
+
+  <ul>
+    <li><code>fx</code>, <code>fy</code> — <strong>focal length in pixels</strong>. Not millimetres: the lens focal length divided by the physical size of one sensor pixel. This is the conversion factor between "how many pixels across is this object" and "how far away is it." They differ slightly if sensor pixels aren't square.</li>
+    <li><code>cx</code>, <code>cy</code> — the <strong>principal point</strong>, where the optical axis pierces the sensor. Near the image centre, but never exactly, because sensors are not mounted perfectly.</li>
+  </ul>
+
+  <h3>What lenses do that pinholes don't</h3>
+  <p>Real glass bends light unevenly, so straight lines in the world come out curved. Two families of error are modelled:</p>
+
+  <p><strong>Radial distortion</strong> — the dominant one. Magnification varies with distance from the centre, so a grid bulges outward (barrel, typical of wide lenses) or pinches inward (pincushion). Corrected with a polynomial in <code>r²</code>, the squared radius from centre, whose coefficients are <code>k1, k2, k3</code>.</p>
+
+  <p><strong>Tangential distortion</strong> — smaller, caused by the lens not sitting perfectly parallel to the sensor, which skews the image slightly. Coefficients <code>p1, p2</code>.</p>
+
+  <p>Those five numbers plus the four intrinsics are what <code>vision/calibration.py</code> computes and stores in <code>MultiMatrix.npz</code>.</p>
+
+  <h3>Why a checkerboard</h3>
+  <p>Calibration is a chicken-and-egg problem: to find the camera parameters you need to know where points are in 3D, but to find where points are you need the camera parameters. A checkerboard breaks the deadlock because you can <em>declare</em> the 3D geometry rather than measure it.</p>
+
+<pre><code>obj_3D[:, :2] = np.mgrid[0:8, 0:5].T.reshape(-1, 2)
+obj_3D *= SQUARE_SIZE   # 29 mm</code></pre>
+  <p class="cap">vision/calibration.py — the board defines its own coordinate system</p>
+
+  <p>The trick: declare the board to be the plane <code>Z = 0</code>, with corners at exact 29&nbsp;mm intervals. This is true <em>by construction</em> — it's a printed grid, its corners really are evenly spaced, and you're free to put the origin on it. Now every photo gives you dozens of exact 3D&rarr;2D correspondences, and enough photos from different angles over-constrain the problem into a least-squares solve. This is <strong>Zhang's method</strong>, and it is why every calibration tutorial hands you a chessboard.</p>
+
+  <p>Chessboard corners specifically, because a saddle point between four squares can be located to <em>sub-pixel</em> accuracy — that is what <code>cv.cornerSubPix</code> does, refining each integer corner to a fractional coordinate by fitting the local intensity gradient. Accuracy of the calibration is limited by corner accuracy, so this matters.</p>
+
+  <div class="note">
+    <p>Vary angle and distance across your shots. Twenty photos of the board flat-on and centred are nearly worthless — they under-constrain the distortion terms, which only reveal themselves when the board sits near the frame edges at an angle. Twenty <em>varied</em> photos are plenty.</p>
+  </div>
+
+  <h3>The honest observation</h3>
+  <p>Here is something worth noticing about this codebase. <code>control_center.py</code> — the script that actually runs the mission — never loads the calibration file. It works entirely in raw pixel coordinates: detect the marker, take the centre, compare against hard-coded pixel targets. The calibration is used only by <code>vision/marker_distance.py</code>, a standalone diagnostic.</p>
+
+  <p>That is not the disaster it sounds like. Everything on the arena lies in a single plane, viewed by a fixed camera. All the tracking asks is "which of these markers is nearest to that one," and distortion affects both roughly equally at short range. The system works.</p>
+
+  <p>But it means the pixel constants are tied to one exact camera pose, which brings us to the thing this project should have used.</p>
+
+  <div class="det" data-tag="the better tool">
+    <p><strong>A homography.</strong> When every point of interest lies on one plane, the full pinhole model is more machinery than you need. A single 3&times;3 matrix — computed once from the four arena corners with <code>cv.getPerspectiveTransform</code> — maps any camera pixel to a position on the arena in millimetres, correcting perspective in one multiply.</p>
+    <p>With that, <code>STOPPING_POINTS</code> would be stated in arena millimetres instead of camera pixels. Move the camera, re-click the four corners, and every constant in the file stays correct. It is perhaps thirty lines of code, and it removes the most fragile dependency in the project.</p>
+  </div>
+
+  <div class="decide">
+    <div class="row pick"><span class="k">Chosen</span><div class="v"><p>Full checkerboard intrinsic calibration, then largely unused — mission logic runs in raw pixels.</p></div></div>
+    <div class="row"><span class="k">Why</span><div class="v"><p>Calibration was needed for the pose-estimation experiments in <code>marker_distance.py</code>, which measure real distances in centimetres. The final tracking approach — nearest-marker snapping — turned out not to need metric accuracy, so the calibration stayed in the repo without ever being wired into the main path.</p></div></div>
+    <div class="row"><span class="k">Instead</span><div class="v"><ul class="alts">
+      <li><b>Planar homography</b> — the right answer for a flat arena and a fixed camera, as above. Four points, one matrix, coordinates in real units.</li>
+      <li><b>ChArUco calibration</b> — more accurate than a plain chessboard because partially visible boards still contribute; each marker identifies which corner is which.</li>
+      <li><b>Circle-grid target</b> — <code>cv.findCirclesGrid</code>. Centroids can be located more precisely than corners under blur, so it wins with a soft or low-resolution lens.</li>
+      <li><b>Skip calibration entirely</b> — legitimate when you only ever compare pixel distances within one image, which is what this project ended up doing. Worth doing <em>deliberately</em> rather than by accident.</li>
+      <li><b>Factory or EXIF intrinsics</b> — some depth cameras and phones report theirs. Convenient, usually less accurate than a careful calibration, and says nothing about distortion.</li>
+      <li><b>Self-calibration / SfM</b> — recover intrinsics from motion across many views, as COLMAP does. Powerful, unnecessary when you can just print a board.</li>
+    </ul></div></div>
+  </div>
+</section>
+
+<section id="s3">
+  <div class="part"><span class="num">03</span><span class="kick">Classical vision</span></div>
+  <h2>Finding the events without asking a network</h2>
+  <p class="standfirst">Before anything is classified, something has to decide where the five images even are. This project does it with three OpenCV calls and two size checks — and that is the right call.</p>
+
+  <h3>The cascade</h3>
+  <p><code>locate_events()</code> is a chain of progressively more expensive filters, each one cheap enough to run on everything that survived the last:</p>
+
+<pre><code>gray = cv.cvtColor(arena, cv.COLOR_BGR2GRAY)
+_, thresholded = cv.threshold(gray, 195, 255, cv.THRESH_BINARY)
+contours, _ = cv.findContours(thresholded, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
+
+for contour in contours:
+    if cv.contourArea(contour) <= 900:      # filter 1: too small
+        continue
+    x, y, w, h = cv.boundingRect(contour)
+    if not (90 <= w < 200 and 90 <= h < 200):  # filter 2: wrong size
+        continue
+    event_image = arena[y:y+h, x:x+w]</code></pre>
+  <p class="cap">control_center/event_detection.py</p>
+
+  <p><span class="lead-in">Grayscale first.</span> Colour is three channels of data that this problem does not need — the events are bright rectangles on a darker arena, a brightness question. Dropping to one channel cuts the work by two thirds and removes colour-cast sensitivity.</p>
+
+  <p><span class="lead-in">Threshold at 195.</span> Every pixel brighter than 195 becomes white, everything else black. The printed event images are on white card, so they light up as solid blobs.</p>
+
+  <p><span class="lead-in">Contours.</span> <code>findContours</code> traces the boundary of each connected white region. <code>RETR_EXTERNAL</code> keeps only outermost boundaries — you want the card, not the shapes printed on it. <code>CHAIN_APPROX_SIMPLE</code> stores a rectangle as four corner points instead of every pixel along its edge.</p>
+
+  <p><span class="lead-in">Two size filters.</span> Area above 900 px² kills specks and glare. The 90&ndash;200 px width and height band is the interesting one: it exists specifically to <strong>reject the ArUco markers</strong>, which are also high-contrast rectangles that survive the threshold, but are physically much smaller. The comment in the original code says exactly this.</p>
+
+  <h3>Global versus adaptive thresholding</h3>
+  <p>This project uses both, in different places, and the contrast teaches the concept.</p>
+
+  <div class="tw"><table>
+    <thead><tr><th>&nbsp;</th><th>Global (event detection)</th><th>Adaptive (marker tracking)</th></tr></thead>
+    <tbody>
+      <tr><td><b>Call</b></td><td><code>cv.threshold(g, 195, 255, …)</code></td><td><code>cv.adaptiveThreshold(g, 255, GAUSSIAN_C, …, 11, 2)</code></td></tr>
+      <tr><td><b>Rule</b></td><td>One cutoff for the whole image</td><td>Cutoff per pixel, from a local 11&times;11 neighbourhood mean</td></tr>
+      <tr><td><b>Cost</b></td><td>Trivial</td><td>A convolution per frame</td></tr>
+      <tr><td><b>Fails when</b></td><td>Lighting is uneven across the frame</td><td>Regions are uniformly bright or dark with no local contrast</td></tr>
+      <tr><td><b>Why here</b></td><td>Runs once, on a controlled setup shot</td><td>Runs every frame; the robot casts a moving shadow and the arena is lit unevenly at the edges</td></tr>
+    </tbody>
+  </table></div>
+
+  <p>That is the general lesson. Global thresholding asks "is this pixel bright?"; adaptive asks "is this pixel brighter than its surroundings?" The second question survives a shadow falling across half the arena. The first does not.</p>
+
+  <p>Worth knowing about a third: <strong>Otsu's method</strong> (<code>cv.THRESH_OTSU</code>) picks the global cutoff automatically by finding the value that best separates the image histogram into two clusters. It would remove the magic number 195 here, at the cost of unpredictability when the arena happens to contain no bright regions at all.</p>
+
+  <h3>Why not just use a neural detector</h3>
+  <p>A modern instinct says: train YOLO to find the events. For this problem that instinct is wrong, and understanding why is worth more than the technique itself.</p>
+
+  <div class="decide">
+    <div class="row pick"><span class="k">Chosen</span><div class="v"><p>Threshold, contour, and two hard-coded size filters.</p></div></div>
+    <div class="row"><span class="k">Why</span><div class="v">
+      <p>The scene is <em>fully controlled</em>. Fixed camera, fixed lighting, known card size, known count, high contrast by design. Every assumption a learned detector would have to discover from data is already known for free — so encoding it directly costs a few lines, needs zero training images, no annotation, no GPU, and runs in milliseconds.</p>
+      <p>It also fails <em>legibly</em>. When it misses a card you can print the threshold image and see why. When a detector misses one, you shrug and collect more data.</p>
+    </div></div>
+    <div class="row"><span class="k">Instead</span><div class="v"><ul class="alts">
+      <li><b>Connected-component labelling</b> (<code>cv.connectedComponentsWithStats</code>) — gives area and bounding box directly, no contour step. Slightly cleaner for exactly this job.</li>
+      <li><b>Edge detection + Hough lines</b> — Canny, then find the rectangles. More robust when cards aren't brighter than the background, but a lot more parameters to tune.</li>
+      <li><b>Contour approximation</b> (<code>cv.approxPolyDP</code>) — reduce each contour to its corners and keep only 4-sided ones. A shape filter rather than a size filter, and it would generalise better than the 90&ndash;200 px band.</li>
+      <li><b>Template matching</b> — slide a reference card across the image. Breaks under scale and rotation change; rarely the right answer.</li>
+      <li><b>YOLO / Faster R-CNN</b> — the right tool when the scene is <em>uncontrolled</em>: variable lighting, unknown object count, cluttered background, objects at any scale. Also collapses detection and classification into one model, which would remove Part 04 entirely. Costs annotated data and a training pipeline.</li>
+      <li><b>Segment Anything (SAM)</b> — zero-shot region proposals with no training at all. Genuinely useful for prototyping, far too heavy to run per-frame here.</li>
+    </ul></div></div>
+  </div>
+
+  <div class="flag">
+    <span class="k">Where this build is brittle</span>
+    <p>Four magic numbers — <code>195</code>, <code>900</code>, <code>90</code>, <code>200</code> — encode the entire understanding of the scene, and none is derived or checked. Change the bulb over the arena and 195 is wrong. Print the cards 10% larger and 200 is wrong. Worse, <code>main()</code> maps the <em>n</em>th detected region to the <em>n</em>th location via <code>chr(i + 65)</code> &mdash; but the regions are never sorted. It simply trusts whatever order <code>findContours</code> happened to return, which is an artefact of the scan, not a guarantee about arena geometry. If that order shifts, or a sixth blob slips past the filters, every event is bound to the wrong location and the robot drives a wrong route with no error raised anywhere. A simple assertion that exactly five regions were found would turn a silent wrong answer into a loud one.</p>
+  </div>
+</section>
+
+<section id="s4">
+  <div class="part"><span class="num">04</span><span class="kick">Deep learning</span></div>
+  <h2>Naming the events</h2>
+  <p class="standfirst">Five classes, a few hundred training images, and no GPU budget. This is exactly the situation transfer learning was invented for — and exactly the situation where its two classic mistakes are easiest to make.</p>
+
+  <h3>Why a neural network here and not in Part 03</h3>
+  <p>Locating the cards was a geometry problem with known answers. Telling a photograph of a fire from a photograph of a collapsed building is not: there is no threshold, no shape rule, no colour histogram that reliably separates those categories. The mapping from pixels to semantic category has to be <em>learned</em>. That is the dividing line, and it is worth internalising — reach for classical CV when you can state the rule, reach for learning when you can only give examples.</p>
+
+  <h3>What a CNN is doing</h3>
+  <p>A convolutional layer slides a small window — say 3&times;3 — across the image, computing a weighted sum at each position. The weights are learned. One such filter might respond to vertical edges, another to a particular colour transition. The output is a <em>feature map</em>: same spatial layout, but each pixel now says "how strongly did this filter fire here."</p>
+
+  <p>Stack these, with pooling steps that halve the resolution in between, and something important happens. Early layers see tiny patches and learn edges and blobs. Middle layers combine those into textures and parts — grids, fur, wheels. Late layers combine <em>those</em> into objects. The hierarchy is not designed; it emerges from training.</p>
+
+  <p>Two properties make convolution the right primitive for images. <strong>Weight sharing</strong>: the same filter is applied everywhere, so an edge detector learned in one corner works in all of them — vastly fewer parameters than a dense layer. <strong>Translation equivariance</strong>: move the object, and its features move with it rather than becoming unrecognisable.</p>
+
+  <h3>Transfer learning, and why it works</h3>
+  <p>Training that hierarchy from scratch needs enormous data. But here is the observation the entire technique rests on: <em>the early and middle layers are not task-specific</em>. Edge detectors and texture detectors are the same whether you are classifying dogs or disaster scenes. Only the final mapping from features to categories is specific to your problem.</p>
+
+  <p>So take a network already trained on ImageNet's 1.2 million images across 1,000 categories, throw away its classifier head, freeze everything else, and train a new head on your five classes. You inherit a feature extractor that cost thousands of GPU-hours, and you train a few hundred thousand parameters on a few hundred images.</p>
+
+  <figure class="wide">
+    <div class="fw">
+      <svg viewBox="0 0 820 250" role="img" aria-label="InceptionV3's convolutional base is frozen and reused as a feature extractor while only a new dense classification head is trained on the five event classes.">
+        <defs>
+          <marker id="a4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+          </marker>
+          <pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <line x1="0" y1="0" x2="0" y2="6" class="s-rule" stroke-width="2.5"/>
+          </pattern>
+        </defs>
+
+        <!-- input -->
+        <rect x="18" y="88" width="66" height="66" class="svg-fill-k s-rule" stroke-width="1"/>
+        <text x="51" y="126" text-anchor="middle" class="svg-mut" font-size="10">224&times;224</text>
+        <text x="51" y="174" text-anchor="middle" class="svg-faint" font-size="10">event crop</text>
+
+        <line x1="88" y1="121" x2="112" y2="121" class="s-rule" stroke-width="1.2" marker-end="url(#a4)"/>
+
+        <!-- frozen base -->
+        <rect x="116" y="52" width="392" height="138" fill="url(#hatch)" class="s-rule" stroke-width="1.5"/>
+        <rect x="116" y="52" width="392" height="138" fill="none" class="s-rule" stroke-width="1.5"/>
+        <text x="312" y="42" text-anchor="middle" class="svg-faint" font-size="10">FROZEN &mdash; 21.8M PARAMETERS, NOT TRAINED</text>
+
+        <rect x="136" y="86" width="52" height="72" class="svg-fill-s s-rule" stroke-width="1"/>
+        <text x="162" y="126" text-anchor="middle" class="svg-mut" font-size="9.5">stem</text>
+        <rect x="204" y="94" width="52" height="56" class="svg-fill-s s-rule" stroke-width="1"/>
+        <text x="230" y="126" text-anchor="middle" class="svg-mut" font-size="9.5">incep.</text>
+        <rect x="272" y="100" width="52" height="44" class="svg-fill-s s-rule" stroke-width="1"/>
+        <text x="298" y="126" text-anchor="middle" class="svg-mut" font-size="9.5">incep.</text>
+        <rect x="340" y="106" width="52" height="32" class="svg-fill-s s-rule" stroke-width="1"/>
+        <text x="366" y="126" text-anchor="middle" class="svg-mut" font-size="9.5">incep.</text>
+        <rect x="408" y="110" width="52" height="24" class="svg-fill-s s-rule" stroke-width="1"/>
+        <text x="434" y="126" text-anchor="middle" class="svg-mut" font-size="9">incep.</text>
+        <rect x="476" y="112" width="18" height="20" class="svg-fill-s s-rule" stroke-width="1"/>
+
+        <text x="162" y="176" text-anchor="middle" class="svg-faint" font-size="9">edges</text>
+        <text x="264" y="176" text-anchor="middle" class="svg-faint" font-size="9">textures</text>
+        <text x="366" y="176" text-anchor="middle" class="svg-faint" font-size="9">parts</text>
+        <text x="462" y="176" text-anchor="middle" class="svg-faint" font-size="9">objects</text>
+
+        <line x1="512" y1="121" x2="540" y2="121" class="s-rule" stroke-width="1.2" marker-end="url(#a4)"/>
+        <text x="526" y="110" text-anchor="middle" class="svg-faint" font-size="9">5&times;5&times;2048</text>
+
+        <!-- trained head -->
+        <rect x="546" y="52" width="248" height="138" fill="none" class="s-acc" stroke-width="1.8"/>
+        <text x="670" y="42" text-anchor="middle" class="svg-acc" font-size="10">TRAINED &mdash; THIS IS ALL YOU LEARN</text>
+
+        <rect x="568" y="94" width="76" height="56" class="svg-fill-s s-acc" stroke-width="1.4"/>
+        <text x="606" y="118" text-anchor="middle" class="lbl svg-ink" font-size="11">Flatten</text>
+        <text x="606" y="134" text-anchor="middle" class="svg-mut" font-size="9">51,200</text>
+
+        <line x1="648" y1="121" x2="668" y2="121" class="s-acc" stroke-width="1.2" marker-end="url(#a4)"/>
+
+        <rect x="672" y="94" width="100" height="56" class="svg-fill-s s-acc" stroke-width="1.4"/>
+        <text x="722" y="114" text-anchor="middle" class="lbl svg-ink" font-size="11">Dense(5)</text>
+        <text x="722" y="130" text-anchor="middle" class="svg-mut" font-size="9">softmax</text>
+
+        <text x="670" y="176" text-anchor="middle" class="svg-faint" font-size="9.5">fire &middot; buildings &middot; aid &middot; military &middot; combat</text>
+        <text x="406" y="228" text-anchor="middle" class="svg-faint" font-size="10">gradients stop at the frozen boundary &mdash; a backward pass touches only the right-hand box</text>
+      </svg>
+    </div>
+    <figcaption>Transfer learning as this project applies it. The expensive representation is inherited; only the last mapping from 51,200 features to 5 classes is learned from the arena photos.</figcaption>
+  </figure>
+
+  <h3>Why InceptionV3 specifically</h3>
+  <p>InceptionV3's contribution is the <strong>inception module</strong>: instead of choosing whether a layer should use 1&times;1, 3&times;3 or 5&times;5 filters, run several in parallel and concatenate the outputs, letting the network learn which scale matters where. To keep that affordable, 1&times;1 convolutions are used as <em>bottlenecks</em> that shrink channel depth before the expensive larger filters run. V3 adds factorisation — a 5&times;5 convolution replaced by two stacked 3&times;3s, and an <em>n</em>&times;<em>n</em> replaced by 1&times;<em>n</em> then <em>n</em>&times;1 — which reaches the same receptive field with substantially less arithmetic.</p>
+
+  <p>Practically, it was chosen because it sits at a good accuracy-per-parameter point, ships in <code>tf.keras.applications</code> with one line, and downloads its ImageNet weights automatically. For a project running inference on a laptop, that convenience is the deciding factor.</p>
+
+  <h3>The training recipe, line by line</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Choice</th><th>What it does</th><th>Why / caveat</th></tr></thead>
+    <tbody>
+      <tr><td><code>weights='imagenet'</code></td><td>Loads pretrained weights</td><td>The entire point. <code>None</code> would need orders of magnitude more data.</td></tr>
+      <tr><td><code>include_top=False</code></td><td>Drops the 1000-class head</td><td>You need 5 classes, not 1000.</td></tr>
+      <tr><td><code>layer.trainable = False</code></td><td>Freezes the base</td><td>Protects pretrained features from being destroyed by large early gradients.</td></tr>
+      <tr><td><code>softmax</code></td><td>Turns 5 scores into probabilities summing to 1</td><td>Correct for mutually exclusive classes. Use sigmoid if labels can co-occur.</td></tr>
+      <tr><td><code>categorical_crossentropy</code></td><td>Penalises confident wrong answers steeply</td><td>The standard partner to softmax. Pairs with one-hot labels.</td></tr>
+      <tr><td><code>adam</code></td><td>Adaptive per-parameter learning rates</td><td>Converges fast without tuning. SGD with momentum often generalises slightly better if you will tune it.</td></tr>
+      <tr><td><code>shear / zoom / flip</code></td><td>Randomly perturbs training images</td><td>Multiplies a small dataset and teaches invariance. Horizontal flip is safe here — a mirrored fire is still a fire.</td></tr>
+      <tr><td class="num-col">15 epochs</td><td>Passes over the data</td><td>Reasonable for a frozen base. With no early stopping or checkpointing, you keep the last epoch, not the best one.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Two mistakes in this build worth studying</h3>
+
+  <div class="flag">
+    <span class="k">Bug 1 &mdash; train / inference preprocessing mismatch</span>
+    <p>This is the single most instructive defect in the project, and a mistake that is made constantly in the wild.</p>
+    <p>Training normalises with <code>ImageDataGenerator(rescale=1./255)</code>, mapping pixels into <strong>[0, 1]</strong>. Inference normalises with InceptionV3's own <code>preprocess_input()</code>, which maps pixels into <strong>[&minus;1, 1]</strong>.</p>
+    <p>The model is therefore shown a completely different input distribution at inference than the one it learned on. It does not crash. It does not warn. It returns confident, meaningfully degraded predictions — the worst possible failure mode, because everything looks like it is working.</p>
+    <p><b>The fix:</b> pick one and use it in both places. Since the base is pretrained InceptionV3, the correct choice is <code>preprocess_input</code> everywhere — pass <code>preprocessing_function=preprocess_input</code> to the generators and drop <code>rescale</code>.</p>
+  </div>
+
+  <figure class="wide">
+    <div class="fw">
+      <svg viewBox="0 0 760 210" role="img" aria-label="Training scales pixels to zero-to-one while inference scales them to minus-one-to-one, so the model sees a different input distribution than it was trained on.">
+        <defs>
+          <marker id="a4b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+          </marker>
+        </defs>
+        <text x="24" y="26" class="svg-faint" font-size="10">TRAINING</text>
+        <rect x="24" y="36" width="92" height="38" class="svg-fill-k s-rule" stroke-width="1"/>
+        <text x="70" y="60" text-anchor="middle" class="svg-mut" font-size="10">pixels 0&ndash;255</text>
+        <line x1="120" y1="55" x2="150" y2="55" class="s-rule" stroke-width="1.2" marker-end="url(#a4b)"/>
+        <rect x="154" y="36" width="118" height="38" class="svg-fill-s s-rule" stroke-width="1"/>
+        <text x="213" y="60" text-anchor="middle" class="svg-ink" font-size="10">rescale 1/255</text>
+        <line x1="276" y1="55" x2="306" y2="55" class="s-rule" stroke-width="1.2" marker-end="url(#a4b)"/>
+        <rect x="310" y="36" width="92" height="38" class="svg-fill-s s-flag" stroke-width="1.6"/>
+        <text x="356" y="60" text-anchor="middle" class="svg-flag" font-size="11">[0, 1]</text>
+
+        <text x="24" y="126" class="svg-faint" font-size="10">INFERENCE</text>
+        <rect x="24" y="136" width="92" height="38" class="svg-fill-k s-rule" stroke-width="1"/>
+        <text x="70" y="160" text-anchor="middle" class="svg-mut" font-size="10">pixels 0&ndash;255</text>
+        <line x1="120" y1="155" x2="150" y2="155" class="s-rule" stroke-width="1.2" marker-end="url(#a4b)"/>
+        <rect x="154" y="136" width="118" height="38" class="svg-fill-s s-rule" stroke-width="1"/>
+        <text x="213" y="160" text-anchor="middle" class="svg-ink" font-size="10">preprocess_input</text>
+        <line x1="276" y1="155" x2="306" y2="155" class="s-rule" stroke-width="1.2" marker-end="url(#a4b)"/>
+        <rect x="310" y="136" width="92" height="38" class="svg-fill-s s-flag" stroke-width="1.6"/>
+        <text x="356" y="160" text-anchor="middle" class="svg-flag" font-size="11">[&minus;1, 1]</text>
+
+        <line x1="356" y1="80" x2="356" y2="130" class="s-flag" stroke-width="1.2" stroke-dasharray="3 3"/>
+        <text x="372" y="108" class="svg-flag" font-size="10">same weights, different world</text>
+
+        <line x1="410" y1="55" x2="452" y2="95" class="s-rule" stroke-width="1.2"/>
+        <line x1="410" y1="155" x2="452" y2="115" class="s-rule" stroke-width="1.2" marker-end="url(#a4b)"/>
+        <rect x="456" y="86" width="128" height="38" class="svg-fill-s s-rule" stroke-width="1"/>
+        <text x="520" y="110" text-anchor="middle" class="svg-ink" font-size="10">the same model</text>
+        <line x1="588" y1="105" x2="616" y2="105" class="s-rule" stroke-width="1.2" marker-end="url(#a4b)"/>
+        <rect x="620" y="86" width="120" height="38" class="svg-fill-s s-flag" stroke-width="1.6"/>
+        <text x="680" y="104" text-anchor="middle" class="svg-flag" font-size="10">confident,</text>
+        <text x="680" y="118" text-anchor="middle" class="svg-flag" font-size="10">quietly worse</text>
+      </svg>
+    </div>
+    <figcaption>Train/serve skew. The two paths differ only in one normalisation call, and nothing in the stack reports the disagreement.</figcaption>
+  </figure>
+
+  <div class="flag">
+    <span class="k">Bug 2 &mdash; Flatten where GlobalAveragePooling belongs</span>
+    <p>The head does <code>Flatten()</code> on the base's roughly 5&times;5&times;2048 output, producing ~51,200 features into <code>Dense(5)</code>. Swapping in <code>GlobalAveragePooling2D()</code> — averaging each channel across space — would give 2,048 features instead.</p>
+    <p>The parameter saving (~256K down to ~10K) is the smaller half of the argument. The real cost of <code>Flatten</code> is that it makes the classifier <em>position-sensitive</em>: it learns "class 3 has a strong activation in channel 900 at grid cell (2,4)." With a few hundred training images, that is an invitation to memorise spatial accidents of the training set. Global average pooling throws position away and asks only "how much of this feature is present anywhere," which is what you actually want and generalises far better from small data.</p>
+  </div>
+
+  <div class="note">
+    <p>A third, subtler coupling: the class order in <code>training/train_classifier.py</code> and the <code>EVENT_NAMES</code> list in <code>control_center/config.py</code> must match exactly, because the model returns an integer index and that index is used to look up a name. Nothing enforces it. Reorder one list and the robot confidently drives to a fire that is actually a hospital. Saving the class list alongside the weights, as JSON, would eliminate an entire category of silent failure.</p>
+  </div>
+
+  <div class="decide">
+    <div class="row pick"><span class="k">Chosen</span><div class="v"><p>Frozen ImageNet InceptionV3 + a trained dense head, 5 classes, ~15 epochs on a small hand-collected dataset.</p></div></div>
+    <div class="row"><span class="k">Why</span><div class="v"><p>A few hundred images and no GPU budget rules out training from scratch. Transfer learning is the standard, correct answer at this data scale, and Keras makes it about twelve lines.</p></div></div>
+    <div class="row"><span class="k">Instead</span><div class="v"><ul class="alts">
+      <li><b>MobileNetV3 / EfficientNet-Lite</b> — 10&ndash;20&times; smaller and faster at similar accuracy on easy tasks. The right pick if inference ever needs to move onto the robot or a Raspberry Pi.</li>
+      <li><b>ResNet50</b> — the other default backbone. Residual connections, very well understood, comparable accuracy. Little to choose between them here.</li>
+      <li><b>Fine-tuning the top base blocks</b> — after the head converges, unfreeze the last inception block and continue at a much lower learning rate. Usually buys a few points of accuracy; the standard second stage that this project skips.</li>
+      <li><b>Vision Transformer (ViT)</b> — stronger at scale, hungrier for data, generally a poor fit for a few hundred images unless heavily pretrained.</li>
+      <li><b>Classical features + SVM</b> — colour histograms or HOG into a support vector machine. With five visually distinct classes this might genuinely have been enough, trains in seconds on a CPU, and is worth trying as a baseline before any network.</li>
+      <li><b>CLIP zero-shot</b> — embed the crop, compare against embeddings of the text "a photo of a fire". <em>No training data at all.</em> For five nameable everyday categories this would plausibly work out of the box, and is the single most interesting alternative to try today.</li>
+      <li><b>One detector instead of two stages</b> — YOLO locating and classifying in one pass, collapsing Parts 03 and 04. Simpler at run time, more expensive to build.</li>
+    </ul></div></div>
+  </div>
+</section>
+
+<section id="s5">
+  <div class="part"><span class="num">05</span><span class="kick">Embedded</span></div>
+  <h2>The robot itself</h2>
+  <p class="standfirst">Five infrared sensors, two motors, an H-bridge and a microcontroller with WiFi. The interesting engineering is not in the parts — it is in what the firmware deliberately refuses to do.</p>
+
+  <h3>Why an ESP32</h3>
+  <p>The deciding feature is that WiFi is <em>on the die</em>. Given the architecture in Part 00, the robot's single most important capability is holding a network connection; an Arduino Uno plus a WiFi shield would be two boards, more wiring, and a slower link. The ESP32 also brings a 240&nbsp;MHz dual-core processor, hardware PWM on any pin, and plenty of GPIO, for a few pounds.</p>
+
+  <div class="note">
+    <p><span class="lead-in">Gotcha worth memorising.</span> GPIO 34, 35, 36 and 39 on the ESP32 are <strong>input-only</strong> — no output driver, and no internal pull-up resistors. This project puts three IR sensors on 34, 35 and 39, which is fine because sensors are inputs. Wire an LED there and you will spend an evening confused.</p>
+  </div>
+
+  <h3>How the sensors see a line</h3>
+  <p>Each IR reflectance sensor is an infrared LED next to a phototransistor. The LED shines down; the phototransistor measures what bounces back. White arena reflects strongly, black tape absorbs. A comparator on the module turns that into a clean digital HIGH or LOW, with the trip point set by a trimmer potentiometer on the board.</p>
+
+  <p>Five of them in a row across the front give a coarse picture of where the line sits:</p>
+
+  <figure class="wide">
+    <div class="fw">
+      <svg viewBox="0 0 780 250" role="img" aria-label="Five infrared sensors in a row read the line; the middle three handle centring while the outer two detect junctions, driving a three-state machine.">
+        <defs>
+          <marker id="a5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+          </marker>
+        </defs>
+
+        <text x="24" y="22" class="svg-faint" font-size="10">SENSOR ARRAY, VIEWED FROM BELOW</text>
+
+        <!-- centered -->
+        <rect x="24" y="40" width="200" height="54" class="svg-fill-s s-rule" stroke-width="1"/>
+        <rect x="112" y="40" width="24" height="54" class="svg-ink"/>
+        <circle cx="44" cy="67" r="7" class="svg-fill-s s-rule" stroke-width="1.4"/>
+        <circle cx="78" cy="67" r="7" class="svg-fill-s s-rule" stroke-width="1.4"/>
+        <circle cx="124" cy="67" r="7" class="svg-acc"/>
+        <circle cx="170" cy="67" r="7" class="svg-fill-s s-rule" stroke-width="1.4"/>
+        <circle cx="204" cy="67" r="7" class="svg-fill-s s-rule" stroke-width="1.4"/>
+        <text x="124" y="116" text-anchor="middle" class="svg-mut" font-size="10">s3 only</text>
+        <text x="124" y="132" text-anchor="middle" class="svg-acc" font-size="10">forward</text>
+
+        <!-- drifting -->
+        <rect x="272" y="40" width="200" height="54" class="svg-fill-s s-rule" stroke-width="1"/>
+        <rect x="316" y="40" width="24" height="54" class="svg-ink"/>
+        <circle cx="292" cy="67" r="7" class="svg-fill-s s-rule" stroke-width="1.4"/>
+        <circle cx="326" cy="67" r="7" class="svg-acc"/>
+        <circle cx="372" cy="67" r="7" class="svg-fill-s s-rule" stroke-width="1.4"/>
+        <circle cx="418" cy="67" r="7" class="svg-fill-s s-rule" stroke-width="1.4"/>
+        <circle cx="452" cy="67" r="7" class="svg-fill-s s-rule" stroke-width="1.4"/>
+        <text x="372" y="116" text-anchor="middle" class="svg-mut" font-size="10">s2 fires</text>
+        <text x="372" y="132" text-anchor="middle" class="svg-acc" font-size="10">nudge left 20 ms</text>
+
+        <!-- node -->
+        <rect x="520" y="40" width="200" height="54" class="svg-fill-s s-rule" stroke-width="1"/>
+        <rect x="562" y="40" width="120" height="54" class="svg-ink"/>
+        <circle cx="540" cy="67" r="7" class="svg-fill-s s-rule" stroke-width="1.4"/>
+        <circle cx="574" cy="67" r="7" class="svg-acc"/>
+        <circle cx="620" cy="67" r="7" class="svg-acc"/>
+        <circle cx="666" cy="67" r="7" class="svg-acc"/>
+        <circle cx="700" cy="67" r="7" class="svg-fill-s s-rule" stroke-width="1.4"/>
+        <text x="620" y="116" text-anchor="middle" class="svg-mut" font-size="10">s2 + s3 + s4 together</text>
+        <text x="620" y="132" text-anchor="middle" class="svg-acc" font-size="10">JUNCTION</text>
+
+        <!-- state machine -->
+        <text x="24" y="180" class="svg-faint" font-size="10">STATE MACHINE</text>
+        <rect x="24" y="192" width="130" height="40" class="svg-fill-s s-acc" stroke-width="1.6"/>
+        <text x="89" y="217" text-anchor="middle" class="lbl svg-ink" font-size="11.5">FOLLOW_LINE</text>
+        <line x1="158" y1="212" x2="214" y2="212" class="s-rule" stroke-width="1.2" marker-end="url(#a5)"/>
+        <text x="186" y="204" text-anchor="middle" class="svg-faint" font-size="9">junction</text>
+        <rect x="218" y="192" width="130" height="40" class="svg-fill-s s-rule" stroke-width="1.2"/>
+        <text x="283" y="217" text-anchor="middle" class="lbl svg-ink" font-size="11.5">NODE_DETECT</text>
+        <path d="M283 192 L283 172 L89 172 L89 190" class="s-rule" stroke-width="1.2" fill="none" marker-end="url(#a5)"/>
+        <text x="186" y="166" text-anchor="middle" class="svg-faint" font-size="9">consume one character, turn, resume</text>
+        <line x1="352" y1="212" x2="408" y2="212" class="s-rule" stroke-width="1.2" marker-end="url(#a5)"/>
+        <text x="380" y="204" text-anchor="middle" class="svg-faint" font-size="9">"STOP"</text>
+        <rect x="412" y="192" width="130" height="40" class="svg-fill-k s-rule" stroke-width="1.2"/>
+        <text x="477" y="217" text-anchor="middle" class="lbl svg-ink" font-size="11.5">STOP</text>
+        <text x="562" y="217" class="svg-faint" font-size="9.5">&larr; only the host can cause this</text>
+      </svg>
+    </div>
+    <figcaption>The middle three sensors do double duty: individually they keep the robot centred, but firing <em>together</em> they mean a crossing line, which is the only event that advances the route string. Stopping is never the robot's own decision.</figcaption>
+  </figure>
+
+  <h3>Bang-bang control, and the PID that was abandoned</h3>
+  <p>The line follower is a <strong>bang-bang controller</strong>: read the sensors, and if you have drifted, correct at full effort for a fixed number of milliseconds. There is no notion of "how far off am I" — only "off, which way."</p>
+
+<pre><code>if (s3 == HIGH && s2 == LOW && s4 == LOW) { forward(); delay(turnDelay); }
+else if (s2 == HIGH) { left();  delay(turnDelay); }
+else if (s4 == HIGH) { right(); delay(turnDelay); }</code></pre>
+
+  <p>The textbook answer is <strong>PID</strong>, and the project tried it first. PID computes a continuous error and sums three terms:</p>
+  <ul>
+    <li><span class="lead-in">P</span> — proportional to current error. Corrects now, but always leaves a small residual offset.</li>
+    <li><span class="lead-in">I</span> — the accumulated error over time. Eliminates that residual, at the risk of winding up and overshooting.</li>
+    <li><span class="lead-in">D</span> — the rate of change of error. Damps oscillation by anticipating; also the term most poisoned by noise.</li>
+  </ul>
+
+  <p>It was abandoned, and the reason is instructive. <strong>PID needs a continuous error signal, and digital IR sensors do not produce one.</strong> Five binary sensors yield a handful of discrete states, so the "error" jumps in steps rather than varying smoothly. The derivative of a step function is a spike, so D was pure noise. The integral accumulated across meaningless quantisation. Gains tuned on one section of track failed on the next.</p>
+
+  <div class="det" data-tag="the real lesson">
+    <p>PID was not the wrong algorithm — it was the right algorithm attached to the wrong sensor. A Pololu QTR-8A <em>analog</em> array reports reflectance as a number per sensor, from which a weighted average gives a smooth, continuous line position. Feed <em>that</em> into PID and it works beautifully; it is how every competitive line follower is built.</p>
+    <p>Choosing bang-bang was the correct engineering call given digital sensors. Choosing digital sensors was the decision that foreclosed the better controller.</p>
+  </div>
+
+  <h3>H-bridges and PWM</h3>
+  <p>A microcontroller pin sources a few milliamps at 3.3&nbsp;V. A motor wants an amp at 6&ndash;12&nbsp;V. The L298N driver bridges that gap and adds direction control.</p>
+
+  <p>An <strong>H-bridge</strong> is four switches around the motor in an H shape. Close the top-left and bottom-right and current flows one way; close the opposite pair and it reverses. Close both on the same side and the motor is shorted, which brakes it. Close all four and you create a short circuit across the supply, which is why the driver has interlocks and why you never drive both inputs of a channel high.</p>
+
+  <p><strong>Speed</strong> comes from PWM on the enable pins. Rather than varying voltage — wasteful, needs analog circuitry — you switch full voltage on and off thousands of times a second. The motor's inertia and inductance average it out, so 50% duty gives roughly half speed. The transistors are either fully on or fully off, so they dissipate very little heat.</p>
+
+  <p>Two motors, independently driven, give <strong>differential drive</strong>: equal speeds go straight, unequal speeds curve, opposite directions spin in place. No steering linkage, and the turn radius is a control decision rather than a mechanical limit.</p>
+
+  <h3>The fragile part: time as a proxy for distance</h3>
+  <p>Every turn in this firmware is <code>delay(660)</code> — spin for 660 milliseconds and hope you have rotated 90 degrees. That constant encodes battery voltage, motor characteristics, wheel diameter, floor friction and robot mass, all at once, none of them measured.</p>
+
+  <p>It was raised from 620&nbsp;ms to 660&nbsp;ms late in the build after a battery change. That is the tell: as the battery drains through a run, the correct value drifts, and the robot's turns slowly degrade. Open-loop timing has no way to notice.</p>
+
+  <div class="decide">
+    <div class="row pick"><span class="k">Chosen</span><div class="v"><p>Digital IR array, bang-bang steering, fixed-duration turns, no encoders.</p></div></div>
+    <div class="row"><span class="k">Why</span><div class="v"><p>Cheapest parts that work, and the architecture makes precision unnecessary — the camera corrects position errors, so the robot only has to be approximately right between junctions.</p></div></div>
+    <div class="row"><span class="k">Instead</span><div class="v"><ul class="alts">
+      <li><b>Analog QTR array + PID</b> — the direct upgrade. Smooth error signal, real closed-loop steering, dramatically better at speed. The single highest-value change to this robot.</li>
+      <li><b>Wheel encoders</b> — count shaft rotations, so a turn becomes "rotate 90&deg;" instead of "spin for 660&nbsp;ms". Removes battery dependence entirely and enables real odometry.</li>
+      <li><b>IMU (MPU-6050 / BNO055)</b> — a gyro integrates to a heading, so turns close the loop on angle. Cheap, and complementary to encoders.</li>
+      <li><b>Stepper motors</b> — inherently countable steps, no encoder needed. Heavier, slower, more current, and they skip silently under load.</li>
+      <li><b>Magnetic tape guidance</b> — what real warehouse AGVs use. Hall sensors over magnetic tape, immune to lighting and dirt in a way optical never is.</li>
+      <li><b>LiDAR + SLAM</b> — build a map and localise in it, no line and no external camera. The genuinely autonomous answer, and a large step up in cost and complexity.</li>
+      <li><b>Camera on the robot</b> — look ahead at the line instead of down at it, enabling curvature-aware speed control. More compute on board; an ESP32-CAM is marginal for it.</li>
+      <li><b>micro-ROS on the ESP32</b> — speak ROS 2 natively, gaining the whole tooling ecosystem. Substantial overhead for a robot this simple.</li>
+    </ul></div></div>
+  </div>
+</section>
+
+<section id="s6">
+  <div class="part"><span class="num">06</span><span class="kick">Protocol</span></div>
+  <h2>The conversation</h2>
+  <p class="standfirst">Four words carry the entire mission: ALERT, SEND, HOME, STOP. The protocol is small enough to hold in your head, and broken in a way that teaches the most important lesson in network programming.</p>
+
+  <h3>Why TCP</h3>
+  <p>The host opens a TCP server on port 8002; the robot connects as a client. TCP gives three guarantees that matter here: bytes arrive, they arrive <em>in order</em>, and a dropped connection is detectable.</p>
+
+  <p>Ordering is the crucial one. A route string is an ordered sequence of instructions — <code>TSLF</code> and <code>TFLS</code> send the robot to different places. UDP would be lower latency, but it can reorder, duplicate and silently drop packets, and you would end up rebuilding sequencing and retransmission on top of it. That is what TCP already is.</p>
+
+  <h3>The exchange</h3>
+  <figure class="wide">
+    <div class="fw">
+      <svg viewBox="0 0 700 330" role="img" aria-label="Sequence of messages between host and robot: the host sends a route, the robot reports ALERT on approach, the host watches the camera and replies STOP, then the robot asks SEND for the next route.">
+        <defs>
+          <marker id="a6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+          </marker>
+          <marker id="a6g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="svg-acc"/>
+          </marker>
+        </defs>
+
+        <rect x="66" y="14" width="132" height="34" class="svg-fill-s s-ink" stroke-width="1.5"/>
+        <text x="132" y="36" text-anchor="middle" class="lbl svg-ink">host</text>
+        <rect x="466" y="14" width="132" height="34" class="svg-fill-s s-ink" stroke-width="1.5"/>
+        <text x="532" y="36" text-anchor="middle" class="lbl svg-ink">robot</text>
+
+        <line x1="132" y1="52" x2="132" y2="308" class="s-rule" stroke-width="1" stroke-dasharray="3 4"/>
+        <line x1="532" y1="52" x2="532" y2="308" class="s-rule" stroke-width="1" stroke-dasharray="3 4"/>
+
+        <line x1="136" y1="76" x2="528" y2="76" class="s-acc" stroke-width="1.4" marker-end="url(#a6g)"/>
+        <text x="332" y="68" text-anchor="middle" class="svg-acc" font-size="10.5">"TSLF"&nbsp;&nbsp;route to the first event</text>
+
+        <rect x="470" y="88" width="124" height="26" class="svg-fill-k s-rule" stroke-width="1"/>
+        <text x="532" y="105" text-anchor="middle" class="svg-mut" font-size="9.5">follows line, counts</text>
+
+        <line x1="528" y1="134" x2="136" y2="134" class="s-ink" stroke-width="1.4" marker-end="url(#a6)"/>
+        <text x="332" y="126" text-anchor="middle" class="svg-ink" font-size="10.5">"ALERT"&nbsp;&nbsp;I'm on final approach</text>
+
+        <rect x="70" y="146" width="124" height="40" class="svg-fill-k s-rule" stroke-width="1"/>
+        <text x="132" y="162" text-anchor="middle" class="svg-mut" font-size="9.5">watches marker 100</text>
+        <text x="132" y="176" text-anchor="middle" class="svg-mut" font-size="9.5">against the target</text>
+
+        <line x1="136" y1="204" x2="528" y2="204" class="s-acc" stroke-width="1.4" marker-end="url(#a6g)"/>
+        <text x="332" y="196" text-anchor="middle" class="svg-acc" font-size="10.5">"STOP"&nbsp;&nbsp;you are there</text>
+
+        <line x1="528" y1="240" x2="136" y2="240" class="s-ink" stroke-width="1.4" marker-end="url(#a6)"/>
+        <text x="332" y="232" text-anchor="middle" class="svg-ink" font-size="10.5">"SEND"&nbsp;&nbsp;next route please</text>
+
+        <line x1="136" y1="276" x2="528" y2="276" class="s-acc" stroke-width="1.4" marker-end="url(#a6g)"/>
+        <text x="332" y="268" text-anchor="middle" class="svg-acc" font-size="10.5">"FLRF"&nbsp;&nbsp;on to the next event</text>
+
+        <text x="332" y="304" text-anchor="middle" class="svg-faint" font-size="10">the robot never decides it has arrived &mdash; it asks, and waits</text>
+      </svg>
+    </div>
+    <figcaption>One full cycle. The robot's "ALERT" hands control to the camera; nothing moves again until the host replies.</figcaption>
+  </figure>
+
+  <p>Two state machines that only touch through four strings. Small, debuggable by watching a serial monitor, and easy to reason about — genuinely good protocol design for the scale of the problem.</p>
+
+  <h3>The bug that teaches framing</h3>
+  <div class="flag">
+    <span class="k">Bug 3 &mdash; TCP is a byte stream, not a message stream</span>
+    <p>The robot reads with <code>client.readStringUntil('\n')</code>, waiting for a newline. The host sends with <code>conn.sendall(str.encode(str(message)))</code>, which <strong>never appends a newline</strong>.</p>
+    <p>So the read never finds its terminator. It works only because <code>readStringUntil</code> gives up after the stream timeout — around a second — and returns whatever it has. Every route the robot receives costs it a needless timeout, and the system is one buffering change away from splitting a route in half.</p>
+    <p>The host side is no better: <code>conn.recv(1024)</code> returns <em>whatever bytes happen to be available</em>. If the robot sends <code>ALERT</code> and <code>SEND</code> in quick succession, one <code>recv</code> can return <code>"ALERTSEND"</code>, matching neither branch of the state machine, and the mission silently hangs.</p>
+    <p><b>The underlying truth:</b> TCP guarantees an ordered stream of <em>bytes</em>. It has no concept of a message. Any message boundary you want, you must add yourself — a delimiter, a length prefix, or a fixed size. The fix here is one character: append <code>\n</code> on send, buffer until <code>\n</code> on receive, on both sides.</p>
+  </div>
+
+  <div class="decide">
+    <div class="row pick"><span class="k">Chosen</span><div class="v"><p>Raw TCP sockets, plain-text messages, no framing, no acknowledgements, no reconnect.</p></div></div>
+    <div class="row"><span class="k">Why</span><div class="v"><p>Zero dependencies on both sides, trivially inspectable, and the vocabulary is four words. For a single robot on a private hotspot, a message broker would be more infrastructure than the problem has.</p></div></div>
+    <div class="row"><span class="k">Instead</span><div class="v"><ul class="alts">
+      <li><b>Newline-delimited JSON over the same socket</b> — the smallest real improvement. Keeps the transport, adds framing and typed fields, still readable in a terminal.</li>
+      <li><b>MQTT</b> — publish/subscribe through a broker. Built for exactly this: many devices, unreliable links, last-will messages when a device drops off. The natural choice the moment there is more than one robot.</li>
+      <li><b>WebSocket</b> — framed messages over HTTP, and a browser can be a client. Convenient if you want a web dashboard.</li>
+      <li><b>HTTP polling</b> — the robot asks "any orders?" on a timer. Stateless and simple; adds latency and wastes bandwidth idling.</li>
+      <li><b>ESP-NOW</b> — Espressif's connectionless peer-to-peer radio protocol. No access point, no TCP stack, millisecond latency. Excellent for robot-to-robot, but the host would need an ESP32 dongle.</li>
+      <li><b>BLE</b> — low power, short range, awkward for continuous streaming. Wrong shape for this.</li>
+      <li><b>ROS 2 / micro-ROS</b> — typed topics, services, tooling, recording and replay for free. The industry answer, and enormous overhead for four message types.</li>
+      <li><b>USB serial tether</b> — utterly reliable, no wireless debugging. Kills the point of a mobile robot, but genuinely the best choice while bringing the firmware up.</li>
+    </ul></div></div>
+  </div>
+
+  <div class="note">
+    <p>Beyond framing, this protocol has no timeouts, no retries and no reconnection. If WiFi drops mid-mission, the robot blocks forever inside <code>client.available()</code> with its motors in whatever state they were, and the host blocks forever inside <code>recv</code>. Neither notices. A heartbeat plus a watchdog that stops the motors on silence is the standard safety pattern, and it is absent here.</p>
+  </div>
+</section>
+
+<section id="s7">
+  <div class="part"><span class="num">07</span><span class="kick">Concurrency</span></div>
+  <h2>Three things at once, one camera</h2>
+  <p class="standfirst">Grab frames, run the mission, draw the map. All three need the same video feed, and a capture device can only be read by one thing at a time.</p>
+
+  <h3>The producer-consumer shape</h3>
+  <p>One thread owns the camera and does nothing else:</p>
+
+<pre><code>def grab_frames(cap):
+    global gframe
+    x, y, w, h = config.TRACKING_CROP
+    while True:
+        ret, frame = cap.read()
+        if ret:
+            gframe = frame[y:y+h, x:x+w]</code></pre>
+
+  <p>The other two read <code>gframe</code> whenever they need a picture. This is the classic <strong>producer-consumer</strong> pattern, and choosing it was right — the alternatives are worse. Opening the camera three times generally fails outright at the driver level. Letting three threads call <code>cap.read()</code> gives each of them every third frame, at unpredictable intervals.</p>
+
+  <h3>Why threads work here despite the GIL</h3>
+  <p>Python's Global Interpreter Lock means only one thread executes Python bytecode at a time, which normally makes threading useless for CPU-bound work. Two things rescue it here:</p>
+  <ul>
+    <li><strong>The work is mostly I/O.</strong> Waiting on a camera frame or a socket read releases the GIL, so other threads run during the wait — which is most of the elapsed time.</li>
+    <li><strong>OpenCV releases the GIL.</strong> Heavy calls like <code>detectMarkers</code> and <code>adaptiveThreshold</code> run in C and drop the lock while working, so they genuinely execute in parallel with Python in other threads.</li>
+  </ul>
+  <p>That is the general rule: threads for I/O and C extensions, processes for pure-Python CPU work.</p>
+
+  <h3>The races, and which ones matter</h3>
+  <p>Sharing a mutable global between threads with no lock is textbook-wrong. It is worth being precise about what actually goes wrong here, because the answer is "less than you would think, plus one thing that is genuinely bad."</p>
+
+  <p><span class="lead-in">Benign.</span> The assignment <code>gframe = frame[...]</code> rebinds a name, and name rebinding is atomic under the GIL. A reader gets either the old array or the new one, never a half-written mixture. Occasionally a consumer processes the same frame twice or skips one, which for tracking is invisible.</p>
+
+  <p><span class="lead-in">Genuinely bad.</span> This, which appears twice:</p>
+<pre><code>while not isinstance(gframe, np.ndarray):
+    pass</code></pre>
+  <p>A <strong>spin-wait</strong>: a tight loop that burns 100% of a CPU core doing nothing, while holding and releasing the GIL as fast as it can — which actively slows down the thread it is waiting for. The correct primitive is <code>threading.Event</code>: the producer calls <code>set()</code> once a frame exists, and the consumer calls <code>wait()</code>, which sleeps at zero cost until then.</p>
+
+  <p><span class="lead-in">Structurally awkward.</span> Both <code>track_robot</code> and <code>command_center</code> read the same <code>gframe</code> and neither knows whether it is new. During an <code>ALERT</code>, the mission thread polls the frame as fast as it can, re-running marker detection on images it may have already processed.</p>
+
+  <div class="decide">
+    <div class="row pick"><span class="k">Chosen</span><div class="v"><p>Three <code>threading.Thread</code>s over one unsynchronised global frame, with spin-waits for readiness.</p></div></div>
+    <div class="row"><span class="k">Why</span><div class="v"><p>The simplest thing that shares one capture device across three consumers. The camera and socket are both I/O-bound, so the GIL is not the bottleneck, and the shared-array race is benign in practice.</p></div></div>
+    <div class="row"><span class="k">Instead</span><div class="v"><ul class="alts">
+      <li><b><code>threading.Event</code></b> — replaces both spin-waits with a proper blocking wait. Two lines, and the most obviously correct fix in the file.</li>
+      <li><b><code>queue.Queue(maxsize=1)</code></b> — the producer pushes, consumers pop with a blocking get. Framework-provided, thread-safe, and consumers can tell a new frame from a repeated one.</li>
+      <li><b>Double buffering with a lock</b> — write to a back buffer, swap under a <code>Lock</code>. Explicit and correct, slightly more code.</li>
+      <li><b><code>multiprocessing</code></b> — real parallelism across cores, needed only if frame processing became CPU-bound in pure Python. Frames must then be shared through shared memory, which is a real cost.</li>
+      <li><b><code>asyncio</code></b> — elegant for many sockets, poor for blocking OpenCV calls, which would have to be pushed into an executor anyway.</li>
+      <li><b>One single-threaded loop</b> — grab a frame, do tracking, check the socket non-blockingly, repeat. For this workload it would very likely be <em>simpler and faster</em>: no shared state, no races, no spin-waits. Threading here solved a problem that a well-shaped loop does not have.</li>
+    </ul></div></div>
+  </div>
+
+  <div class="note">
+    <p>One more detail: <code>track_robot</code> calls <code>cap.release()</code> when you press <kbd class="kbd">q</kbd>, but <code>grab_frames</code> keeps looping and calling <code>cap.read()</code> on the released device forever. The process does not exit cleanly. A shared <code>threading.Event</code> used as a shutdown flag, checked by every loop, is the standard remedy.</p>
+  </div>
+</section>
+
+<section id="s8">
+  <div class="part"><span class="num">08</span><span class="kick">Planning</span></div>
+  <h2>Deciding where to go</h2>
+  <p class="standfirst">Thirty hard-coded strings instead of a pathfinding algorithm. That sounds like the lazy option; it is actually the better engineering, and it hides the cleverest trick in the codebase.</p>
+
+  <h3>The route table</h3>
+  <p>Six locations — five events plus the start box — and a route string stored for every ordered pair:</p>
+
+<pre><code>ROUTES = {
+    "I": {"A": "IRF",    "B": "IRLRF",  "C": "ISSRSF", …},
+    "A": {"B": "FLRF",   "C": "FLSRF",  "D": "TRSRF",  …},
+    …
+}</code></pre>
+
+  <p>Thirty entries, measured by driving the arena and writing down what happened. No graph, no search, no heuristic.</p>
+
+  <div class="decide">
+    <div class="row pick"><span class="k">Chosen</span><div class="v"><p>A complete lookup table of precomputed routes.</p></div></div>
+    <div class="row"><span class="k">Why</span><div class="v">
+      <p>Six nodes means thirty routes, and thirty is small enough to enumerate by hand. Lookup is O(1), cannot fail at run time, and — the decisive argument — <strong>a route that has been driven and verified is worth more than a route that has been computed</strong>. A search algorithm optimises the metric you give it; the table encodes what actually worked on the physical arena, including the turns the robot takes reliably and the ones it doesn't.</p>
+      <p>Writing a planner would also have meant building an accurate graph model of the arena — measuring every junction's connectivity and turn geometry — which is more work than writing down thirty strings, for a graph that never changes.</p>
+    </div></div>
+    <div class="row"><span class="k">Instead</span><div class="v"><ul class="alts">
+      <li><b>BFS</b> — shortest path by hop count on an unweighted graph. The natural first upgrade if the arena grew, and about fifteen lines.</li>
+      <li><b>Dijkstra</b> — shortest path by real cost, letting you charge more for turns than for straights, which genuinely matters when turning is slow and error-prone.</li>
+      <li><b>A*</b> — Dijkstra plus a distance heuristic. Pays off on large maps; on six nodes the heuristic costs more than it saves.</li>
+      <li><b>Precompute with Floyd&ndash;Warshall</b> — build the same table this project wrote by hand, from a graph description, at start-up. The best of both: one source of truth, still O(1) at run time.</li>
+      <li><b>ROS 2 Nav2</b> — a full navigation stack with costmaps and dynamic replanning. Appropriate for a robot in an unknown environment; absurd for a line follower on six fixed nodes.</li>
+    </ul></div></div>
+  </div>
+
+  <h3>The orientation trick</h3>
+  <p>Here is the subtlety that makes the table work. "Turn left" is meaningless without knowing which way the robot is facing. Arrive at location C driving north and the route onward is one thing; arrive driving south and every left becomes a right.</p>
+
+  <p>Naively you would need a table keyed by <em>(from, to, arrival heading)</em> — three dimensions, and you would have to track heading on the host. Instead, the robot tracks a single variable, <code>head</code>, that is always <code>'T'</code> or <code>'F'</code> — the two orientations it can ever be in on this arena. And the letters <code>T</code> and <code>F</code> do two different jobs depending on <em>where</em> they sit in the string.</p>
+
+  <figure class="wide">
+    <div class="fw">
+      <svg viewBox="0 0 800 300" role="img" aria-label="A leading T or F asserts the required heading and triggers a u-turn on mismatch; a trailing T or F after the final turn records the resulting heading for the next leg.">
+        <defs>
+          <marker id="a8" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+          </marker>
+        </defs>
+
+        <text x="400" y="24" text-anchor="middle" class="lbl svg-ink" font-size="15">T R S R F</text>
+        <line x1="352" y1="34" x2="352" y2="58" class="s-acc" stroke-width="1.2"/>
+        <line x1="450" y1="34" x2="450" y2="58" class="s-flag" stroke-width="1.2"/>
+
+        <!-- leading -->
+        <rect x="120" y="62" width="230" height="96" class="svg-fill-s s-acc" stroke-width="1.6"/>
+        <text x="235" y="84" text-anchor="middle" class="svg-acc" font-size="10">LEADING &mdash; AN ASSERTION</text>
+        <text x="235" y="106" text-anchor="middle" class="svg-ink" font-size="11">"I must be facing T"</text>
+        <text x="235" y="126" text-anchor="middle" class="svg-mut" font-size="10.5">head == 'T' ? &nbsp;continue</text>
+        <text x="235" y="144" text-anchor="middle" class="svg-mut" font-size="10.5">head != 'T' ? &nbsp;uTurn() first</text>
+
+        <!-- trailing -->
+        <rect x="452" y="62" width="230" height="96" class="svg-fill-s s-flag" stroke-width="1.6"/>
+        <text x="567" y="84" text-anchor="middle" class="svg-flag" font-size="10">TRAILING &mdash; AN ASSIGNMENT</text>
+        <text x="567" y="106" text-anchor="middle" class="svg-ink" font-size="11">"I am now facing F"</text>
+        <text x="567" y="126" text-anchor="middle" class="svg-mut" font-size="10.5">head = 'F'</text>
+        <text x="567" y="144" text-anchor="middle" class="svg-mut" font-size="10.5">carried into the next leg</text>
+
+        <!-- middle -->
+        <text x="400" y="182" text-anchor="middle" class="svg-faint" font-size="10">between them: R S R &mdash; one movement consumed per junction</text>
+
+        <!-- timeline -->
+        <line x1="80" y1="228" x2="720" y2="228" class="s-rule" stroke-width="1" marker-end="url(#a8)"/>
+        <circle cx="128" cy="228" r="4" class="svg-acc"/>
+        <text x="128" y="252" text-anchor="middle" class="svg-mut" font-size="9.5">check heading</text>
+        <text x="128" y="266" text-anchor="middle" class="svg-faint" font-size="9">u-turn if wrong</text>
+        <circle cx="290" cy="228" r="4" class="svg-ink"/>
+        <text x="290" y="252" text-anchor="middle" class="svg-mut" font-size="9.5">node: R</text>
+        <circle cx="410" cy="228" r="4" class="svg-ink"/>
+        <text x="410" y="252" text-anchor="middle" class="svg-mut" font-size="9.5">node: S</text>
+        <circle cx="530" cy="228" r="4" class="svg-ink"/>
+        <text x="530" y="252" text-anchor="middle" class="svg-mut" font-size="9.5">node: R</text>
+        <circle cx="530" cy="228" r="9" fill="none" class="s-flag" stroke-width="1.4"/>
+        <text x="530" y="212" text-anchor="middle" class="svg-flag" font-size="9">then head = 'F'</text>
+        <circle cx="668" cy="228" r="4" class="svg-acc"/>
+        <text x="668" y="252" text-anchor="middle" class="svg-mut" font-size="9.5">string empty</text>
+        <text x="668" y="266" text-anchor="middle" class="svg-faint" font-size="9">send "ALERT"</text>
+      </svg>
+    </div>
+    <figcaption>The same two symbols mean different things by position. Leading, they are a precondition the robot must satisfy; trailing, they are a fact the robot records about itself.</figcaption>
+  </figure>
+
+  <p>In the firmware, the assertion lives in <code>loop()</code> and the assignment lives at the end of <code>nodeDetected()</code>:</p>
+
+<pre><code>// loop() -- leading T is a requirement
+else if (roadConfiguration[0] == 'T') {
+  if (head == 'T') { roadConfiguration.remove(0, 1); }
+  else             { uTurn(); roadConfiguration.remove(0, 1); }
+}
+
+// nodeDetected() -- trailing T/F is a declaration
+roadConfiguration.remove(0, 1);
+if (roadConfiguration[0] == 'T' | roadConfiguration[0] == 'F') {
+  head = roadConfiguration[0];
+  roadConfiguration.remove(0, 1);
+}</code></pre>
+
+  <p>The payoff: the host never has to model heading at all. It looks up <code>ROUTES["A"]["E"]</code> and sends it. If the robot happens to be facing the wrong way, the leading character makes it fix itself, locally, with information the host does not have. A three-dimensional planning problem is pushed into two dimensions plus one byte of robot state.</p>
+
+  <div class="note">
+    <p>This is a pattern worth naming: <strong>put the correction where the information is</strong>. The robot knows its own heading; the host knows the map. Rather than synchronising heading over the network, the protocol carries a <em>requirement</em> and lets the robot satisfy it however it must.</p>
+  </div>
+
+  <h3>Visit order: priority, not distance</h3>
+  <p>The order of destinations comes from <code>EVENT_PRIORITY</code> — fire first, then destroyed buildings, humanitarian aid, military vehicles, combat — a fixed ranking by urgency of the <em>event</em>, with no reference to where it is on the arena.</p>
+
+  <p>So the robot will happily cross the whole arena for a fire and cross back for a collapsed building. That is deliberate: in the disaster-response scenario the project models, urgency beats efficiency. But it is worth seeing the alternative clearly.</p>
+
+  <div class="decide">
+    <div class="row pick"><span class="k">Chosen</span><div class="v"><p>Sort destinations by a fixed event-priority ranking, ignoring travel cost entirely.</p></div></div>
+    <div class="row"><span class="k">Why</span><div class="v"><p>The scenario says a fire is more urgent than a firefight, so it is visited first regardless of distance. It is also trivially predictable, which matters enormously when debugging a physical robot.</p></div></div>
+    <div class="row"><span class="k">Instead</span><div class="v"><ul class="alts">
+      <li><b>Nearest-neighbour</b> — always go to the closest unvisited location. Minimises travel, ignores urgency, and is two lines of code.</li>
+      <li><b>Travelling salesman</b> — the true shortest tour. With five stops, brute force over 120 permutations is instant. The right answer if total time were the only objective.</li>
+      <li><b>Weighted objective</b> — score each candidate as <code>&alpha;&thinsp;&times;&thinsp;urgency &minus; &beta;&thinsp;&times;&thinsp;distance</code> and take the best. The honest middle ground, and how real dispatch systems work.</li>
+      <li><b>Dynamic replanning</b> — recompute after each stop as conditions change. Necessary if events could appear mid-run; unnecessary when all five are known before the robot moves.</li>
+    </ul></div></div>
+  </div>
+</section>
+
+<section id="s9">
+  <div class="part"><span class="num">09</span><span class="kick">Geospatial</span></div>
+  <h2>Putting a tabletop robot on a world map</h2>
+  <p class="standfirst">The arena is a metre across, and the robot's position is published as latitude and longitude. That is not as silly as it sounds.</p>
+
+  <h3>The indirection</h3>
+  <p>The tracking thread never computes a coordinate. It identifies the nearest marker, looks its ID up in <code>lat_long.csv</code>, and writes those two numbers to <code>live.csv</code>:</p>
+
+<pre><code>ar_id → [lat, lon]      # static table, measured once by hand
+live.csv ← lat, lon     # overwritten every frame
+</code></pre>
+
+  <p>QGIS holds a delimited-text layer pointed at <code>live.csv</code> with a refresh interval, so it re-reads the file and redraws the point. That is the entire animation mechanism — no socket, no plugin, no API. One process writes a file, another polls it.</p>
+
+  <h3>Why geographic coordinates at all</h3>
+  <p>The arena has no real latitude. The coordinates are fictional, assigned when the arena photograph was <strong>georeferenced</strong> — pinned to a location on the Earth so that GIS software can treat it as a map. Once you have done that, you inherit a large amount of software for free: layer rendering, projections, styling, symbology, spatial queries, print composition. Building an equivalent visualisation from scratch is a real project; borrowing a GIS is an afternoon.</p>
+
+  <p>It is also honest about the domain being modelled. Real disaster-response mapping <em>is</em> GIS work, and the pipeline here — track an asset, publish coordinates, render on a basemap — is structurally identical to what an emergency operations centre runs, just at 1:50 scale.</p>
+
+  <div class="note">
+    <p><span class="lead-in">The CRS in one paragraph.</span> A coordinate reference system says what the numbers mean. <strong>EPSG:4326</strong> (WGS 84) is degrees of latitude and longitude on a globe — what GPS reports, and what this project uses. <strong>EPSG:3857</strong> is the flat Web Mercator projection every web map tiles in. Degrees are not a constant distance apart, which is why measuring distance in 4326 is wrong and every GIS asks you to reproject first. Here it does not matter, because nothing computes distance from the coordinates — they are only ever drawn.</p>
+  </div>
+
+  <div class="decide">
+    <div class="row pick"><span class="k">Chosen</span><div class="v"><p>Overwrite a two-row CSV every frame; let QGIS poll it on a timer.</p></div></div>
+    <div class="row"><span class="k">Why</span><div class="v"><p>The simplest interface between two programs that do not otherwise know about each other. No API, no dependency, no protocol — and you can debug it by opening the file. QGIS supplies all the cartography.</p></div></div>
+    <div class="row"><span class="k">Instead</span><div class="v"><ul class="alts">
+      <li><b>Append instead of overwrite</b> — keeps a trail of where the robot has been, and lets you replay a run afterwards. A one-word change with a large payoff for debugging.</li>
+      <li><b>Leaflet or MapLibre in a browser</b> — a web page over a WebSocket. Shareable by URL, no desktop GIS install, smooth animation. More code, and you build the cartography yourself.</li>
+      <li><b>QGIS Python plugin</b> — push points directly into a memory layer through PyQGIS. No file polling, no I/O race, much lower latency. Couples your code to QGIS internals.</li>
+      <li><b>Matplotlib over the arena image</b> — plot pixels on the photo, skip geography entirely. The most direct option, and arguably what the project actually needed.</li>
+      <li><b>RViz or Foxglove</b> — purpose-built robot visualisation with time travel, multiple synchronised streams, and recorded playback. The right tool once there is more than one signal to watch.</li>
+    </ul></div></div>
+  </div>
+
+  <div class="flag">
+    <span class="k">Bug 4 &mdash; a torn file is always possible</span>
+    <p><code>write_live_position</code> opens <code>live.csv</code> in <code>"w"</code> mode, which truncates it immediately, then writes two rows. Between those two moments the file is empty or half-written on disk — and QGIS may poll at exactly that instant, reading a malformed file.</p>
+    <p>In practice the window is sub-millisecond and QGIS mostly gets away with it, which is precisely what makes this class of bug so persistent: it fails rarely and unreproducibly. The standard fix is an <strong>atomic write</strong> — write to <code>live.csv.tmp</code>, then <code>os.replace()</code> it over the target. <code>os.replace</code> is atomic on every major platform, so a reader sees either the complete old file or the complete new one, never a torn one.</p>
+  </div>
+</section>
+
+<section id="s10">
+  <div class="part"><span class="num">10</span><span class="kick">Craft</span></div>
+  <h2>Holding it together</h2>
+  <p class="standfirst">The engineering practices that are not about robots at all, but decide whether the project still runs in a year.</p>
+
+  <h3>Configuration as a module</h3>
+  <p>The original code had absolute paths from one developer's laptop scattered across every file — <code>/home/deadmonk/Desktop/…</code> in the Python, <code>C:/Users/hp/…</code> in the training script. The project could not run on any other machine without a search and replace.</p>
+
+  <p>Everything now resolves from the repository root, with environment variables for what genuinely varies per setup:</p>
+
+<pre><code>ROOT_DIR = Path(__file__).resolve().parent.parent
+CAMERA_INDEX = int(os.environ.get("GEOGUIDE_CAMERA", 2))
+HOST_IP = os.environ.get("GEOGUIDE_HOST_IP", "192.168.137.181")</code></pre>
+
+  <p>The rule this follows: <strong>a file should be able to find its siblings without being told where it is.</strong> <code>__file__</code> is always correct; a hard-coded path is correct until someone moves the folder.</p>
+
+  <p>Environment variables handle the rest because they let a value change without editing a tracked file, which means no accidental commits of local settings and no merge conflicts over whose camera is on index 2.</p>
+
+  <h3>Secrets</h3>
+  <p>WiFi credentials were compiled into <code>vanguard.ino</code> and committed. They now live in <code>secrets.h</code>, gitignored, with a <code>secrets.example.h</code> template beside it showing the shape without the values.</p>
+
+  <p>That pattern — an ignored real file, a committed example — is worth using reflexively. It documents what is needed, keeps the repository clean, and means a new clone fails with "missing secrets.h" rather than silently trying to join someone else's network.</p>
+
+  <div class="note">
+    <p>Worth being clear-eyed: <strong>git history is forever</strong>. Removing a password in a new commit does not remove it from the repository — anyone can check out the old commit. A credential that has been pushed publicly should be treated as compromised and changed on the router, not just deleted from the working tree.</p>
+  </div>
+
+  <h3>The couplings that nothing enforces</h3>
+  <p>The most dangerous edges in this project are the ones no compiler or test can see. Each pair below must agree, and nothing checks that they do:</p>
+
+  <div class="tw"><table>
+    <thead><tr><th>This</th><th>Must match</th><th>If it doesn't</th></tr></thead>
+    <tbody>
+      <tr><td><code>CLASSES</code> in the trainer</td><td><code>EVENT_NAMES</code> in config</td><td>Every event is mislabelled, confidently</td></tr>
+      <tr><td><code>HOST_IP</code> in config</td><td><code>host</code> in <code>secrets.h</code></td><td>Robot never connects; both sides hang</td></tr>
+      <tr><td><code>STOPPING_POINTS</code></td><td>Physical camera pose</td><td>Robot stops in the wrong places</td></tr>
+      <tr><td><code>ROUTES</code> strings</td><td>Physical arena layout</td><td>Robot drives off the line</td></tr>
+      <tr><td>Route characters</td><td>Firmware's <code>switch</code></td><td>Unknown characters silently ignored</td></tr>
+    </tbody>
+  </table></div>
+
+  <p>Some of these can be closed cheaply. Saving the class list as JSON next to the model weights and loading it at inference turns the first row into an impossibility rather than a hazard. Asserting that exactly five events were detected turns a silent misroute into an immediate error. Neither is more than a few lines, and both convert a debugging session into an exception.</p>
+
+  <h3>What is still missing</h3>
+  <ul>
+    <li><span class="lead-in">Tests.</span> There are none. Yet the pure functions — <code>distance_between</code>, <code>priority</code>, route-table completeness, the <code>chr(i + 65)</code> mapping — are all testable without hardware, and those are exactly where the silent failures live.</li>
+    <li><span class="lead-in">Logging.</span> Everything is <code>print()</code>. A run leaves no record, so a failure cannot be examined afterwards. <code>logging</code> with timestamps to a file would make post-mortems possible.</li>
+    <li><span class="lead-in">Error handling.</span> A dropped frame, a lost socket, a missing model file all propagate as raw exceptions or silent hangs. Nothing retries and nothing stops the motors.</li>
+    <li><span class="lead-in">Type hints.</span> Cheap documentation that a checker can verify — particularly valuable where tuples of pixel coordinates flow between functions.</li>
+    <li><span class="lead-in">Recorded runs.</span> Saving the camera feed would let the whole vision pipeline be re-tested against a real run without setting up the arena. This is the highest-leverage missing tool in the project.</li>
+  </ul>
+
+  <div class="note">
+    <p>A small C++ detail worth knowing, from <code>nodeDetected()</code>: <code>if (a == 'T' | a == 'F')</code> uses bitwise OR where logical <code>||</code> was meant. It happens to work, because comparisons yield 0 or 1 and bitwise OR of those matches logical OR. But it loses short-circuit evaluation, and the day one side has a side effect it becomes a real bug. Write <code>||</code>.</p>
+  </div>
+</section>
+
+<section id="s11">
+  <div class="part"><span class="num">11</span><span class="kick">Retrospect</span></div>
+  <h2>If you rebuilt it today</h2>
+  <p class="standfirst">Ordered by value per hour of work. The first four are small and change the reliability of the whole system.</p>
+
+  <div class="tw"><table>
+    <thead><tr><th>Change</th><th>Fixes</th><th>Effort</th></tr></thead>
+    <tbody>
+      <tr><td>Newline-frame the protocol on both sides</td><td>Timeout on every route, risk of merged messages</td><td>~10 lines</td></tr>
+      <tr><td>Use <code>preprocess_input</code> in training too</td><td>Train/serve skew silently degrading every prediction</td><td>2 lines</td></tr>
+      <tr><td><code>GlobalAveragePooling2D</code> instead of <code>Flatten</code></td><td>Overfitting, positional brittleness</td><td>1 line</td></tr>
+      <tr><td><code>threading.Event</code> instead of spin-waits</td><td>A wasted CPU core, slower producer</td><td>~6 lines</td></tr>
+      <tr><td>Atomic write for <code>live.csv</code></td><td>Rare torn reads in QGIS</td><td>3 lines</td></tr>
+      <tr><td>Save class names with the model</td><td>The worst silent-mislabel coupling</td><td>~5 lines</td></tr>
+      <tr><td>Assert exactly five events detected</td><td>Silent misrouting when detection misfires</td><td>1 line</td></tr>
+      <tr><td>Homography to arena coordinates</td><td>Every pixel constant breaking when the camera moves</td><td>~30 lines</td></tr>
+      <tr><td>Heartbeat + motor watchdog</td><td>Runaway robot on WiFi loss</td><td>~30 lines</td></tr>
+      <tr><td>Record camera feed to file; replay for tests</td><td>No way to test vision without the arena</td><td>~50 lines</td></tr>
+      <tr><td>Analog QTR array + real PID</td><td>The speed and smoothness ceiling</td><td>Hardware + tuning</td></tr>
+      <tr><td>Wheel encoders for turns</td><td>Turn accuracy drifting with battery voltage</td><td>Hardware + firmware</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>The one architectural change worth considering</h3>
+  <p>Everything above is a repair. The one genuine redesign would be to <strong>stop hard-coding arena geometry in pixels</strong> and instead define the arena once — nodes, edges, headings, real-world coordinates — in a single data file. From that description you could generate the route table with Floyd&ndash;Warshall, derive stopping points via the homography, and check route strings against the graph automatically.</p>
+
+  <p>Today the arena's layout is encoded implicitly in four places: the route strings, the stopping-point pixels, the marker coordinate CSV, and the physical tape on the table. Making it explicit in one place, and deriving the other three, is what would turn this from a project that works into a project that can be changed.</p>
+</section>
+
+<section id="sa">
+  <div class="part"><span class="num">A</span><span class="kick">Appendix</span></div>
+  <h2>Every part, listed</h2>
+  <p class="standfirst">A lookup table for the whole stack — what each piece is, and the one thing worth remembering about it.</p>
+
+  <h4>Vision &mdash; OpenCV</h4>
+  <div class="tw"><table>
+    <thead><tr><th>API</th><th>Does</th><th>Remember</th></tr></thead>
+    <tbody>
+      <tr><td><code>VideoCapture</code></td><td>Opens a camera by index</td><td>Index is OS-dependent; one process per device</td></tr>
+      <tr><td><code>cvtColor</code></td><td>Converts colour space</td><td>OpenCV is BGR, not RGB — a constant source of inverted images</td></tr>
+      <tr><td><code>threshold</code></td><td>Global binarisation</td><td>Add <code>THRESH_OTSU</code> to pick the cutoff automatically</td></tr>
+      <tr><td><code>adaptiveThreshold</code></td><td>Per-pixel binarisation</td><td>Survives uneven lighting; block size must be odd</td></tr>
+      <tr><td><code>findContours</code></td><td>Traces region boundaries</td><td>Return order is not meaningful — sort it yourself</td></tr>
+      <tr><td><code>contourArea</code>, <code>boundingRect</code></td><td>Region measurements</td><td>The cheapest possible shape filters</td></tr>
+      <tr><td><code>aruco.detectMarkers</code></td><td>Finds and decodes fiducials</td><td>Returns corners <em>and</em> IDs; corners give orientation</td></tr>
+      <tr><td><code>calibrateCamera</code></td><td>Solves for intrinsics + distortion</td><td>Needs varied board angles, not just varied positions</td></tr>
+      <tr><td><code>cornerSubPix</code></td><td>Sub-pixel corner refinement</td><td>Calibration accuracy depends on it</td></tr>
+      <tr><td><code>getPerspectiveTransform</code></td><td>4-point homography</td><td>The tool this project should have used</td></tr>
+    </tbody>
+  </table></div>
+
+  <h4>Learning &mdash; TensorFlow / Keras</h4>
+  <div class="tw"><table>
+    <thead><tr><th>API</th><th>Does</th><th>Remember</th></tr></thead>
+    <tbody>
+      <tr><td><code>InceptionV3</code></td><td>Pretrained backbone</td><td><code>include_top=False</code> to reuse as a feature extractor</td></tr>
+      <tr><td><code>preprocess_input</code></td><td>Model-specific normalisation</td><td>Must be identical in training and inference</td></tr>
+      <tr><td><code>layer.trainable = False</code></td><td>Freezes weights</td><td>Recompile after changing it, or it has no effect</td></tr>
+      <tr><td><code>ImageDataGenerator</code></td><td>Loads and augments from folders</td><td>Deprecated in favour of <code>tf.data</code> / <code>image_dataset_from_directory</code></td></tr>
+      <tr><td><code>flow_from_directory</code></td><td>Folder names become labels</td><td>Pass <code>classes=</code> explicitly or order is alphabetical</td></tr>
+      <tr><td><code>Dense</code> + <code>softmax</code></td><td>Classification head</td><td>Softmax for mutually exclusive classes only</td></tr>
+      <tr><td><code>GlobalAveragePooling2D</code></td><td>Spatial average per channel</td><td>Almost always better than <code>Flatten</code> after a conv base</td></tr>
+      <tr><td><code>model.save()</code></td><td>Weights + architecture</td><td>Save the class list beside it</td></tr>
+    </tbody>
+  </table></div>
+
+  <h4>Robot &mdash; ESP32 / Arduino</h4>
+  <div class="tw"><table>
+    <thead><tr><th>Piece</th><th>Does</th><th>Remember</th></tr></thead>
+    <tbody>
+      <tr><td><code>WiFi.begin()</code></td><td>Joins a network</td><td>Poll <code>WiFi.status()</code> — it is not instant</td></tr>
+      <tr><td><code>WiFiClient</code></td><td>TCP client</td><td><code>readStringUntil</code> needs the delimiter to actually be sent</td></tr>
+      <tr><td><code>digitalWrite</code> / <code>digitalRead</code></td><td>GPIO</td><td>34, 35, 36, 39 are input-only, no pull-ups</td></tr>
+      <tr><td>PWM on enable pins</td><td>Motor speed</td><td>Duty cycle, not voltage — efficient and simple</td></tr>
+      <tr><td>L298N H-bridge</td><td>Direction + power</td><td>Never drive both inputs of a channel high</td></tr>
+      <tr><td><code>delay()</code></td><td>Blocking wait</td><td>Blocks everything; time is a poor proxy for distance</td></tr>
+      <tr><td>IR reflectance sensor</td><td>Line detection</td><td>Digital output forecloses PID; analog enables it</td></tr>
+    </tbody>
+  </table></div>
+
+  <h4>Host &mdash; Python</h4>
+  <div class="tw"><table>
+    <thead><tr><th>Piece</th><th>Does</th><th>Remember</th></tr></thead>
+    <tbody>
+      <tr><td><code>socket</code></td><td>TCP server</td><td><code>SO_REUSEADDR</code> avoids "address already in use" after a crash</td></tr>
+      <tr><td><code>threading</code></td><td>Concurrency</td><td>Good for I/O and C extensions, useless for pure-Python CPU work</td></tr>
+      <tr><td><code>pickle</code></td><td>Object serialisation</td><td>Python-only and unsafe on untrusted input — JSON is usually better</td></tr>
+      <tr><td><code>csv</code></td><td>Tabular I/O</td><td>Overwriting in place is not atomic</td></tr>
+      <tr><td><code>pathlib</code></td><td>Filesystem paths</td><td><code>Path(__file__).resolve()</code> anchors a project to itself</td></tr>
+      <tr><td><code>numpy</code></td><td>Array maths</td><td>Images are just arrays; slicing is how you crop</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="sb">
+  <div class="part"><span class="num">B</span><span class="kick">Appendix</span></div>
+  <h2>A path through it</h2>
+  <p class="standfirst">Nine exercises, in order. Each one is small, runnable, and teaches one idea from the parts above. Most need only a webcam.</p>
+
+  <ol>
+    <li><span class="lead-in">See a marker.</span> Print a 4&times;4 ArUco marker and run <code>vision/detect_markers.py</code>. Tilt it, cover a corner, move it to the frame edge. Find where detection fails. <em>Part 01.</em></li>
+    <li><span class="lead-in">Calibrate.</span> Run <code>capture_calibration_images.py</code> then <code>calibration.py</code>. Do it once with all shots flat and centred, once with varied angles. Compare the distortion coefficients and see how much the second run changes them. <em>Part 02.</em></li>
+    <li><span class="lead-in">Break a threshold.</span> Take a photo of bright cards, run the contour cascade, then shine a lamp on one side and run it again. Now swap the global threshold for adaptive and watch the failure disappear. <em>Part 03.</em></li>
+    <li><span class="lead-in">Reproduce the skew bug.</span> Train the classifier as written. Predict on a test image with <code>rescale=1/255</code>, then with <code>preprocess_input</code>. Compare the confidence values. This is the fastest way to make train/serve skew feel real. <em>Part 04.</em></li>
+    <li><span class="lead-in">Swap the head.</span> Retrain with <code>GlobalAveragePooling2D</code> instead of <code>Flatten</code>. Compare validation accuracy and the gap between train and validation curves. <em>Part 04.</em></li>
+    <li><span class="lead-in">Talk to the robot by hand.</span> Flash <code>esp32_wifi_test.ino</code>, run <code>tools/socket_link_test.py</code>, and send strings manually. Then add <code>\n</code> to the sends and watch the per-message latency collapse. <em>Part 06.</em></li>
+    <li><span class="lead-in">Follow a line.</span> Lay black tape on white card and get bang-bang following working. Then deliberately double <code>turnDelay</code> and watch it oscillate — that is the P term being too large, felt rather than read. <em>Part 05.</em></li>
+    <li><span class="lead-in">Generate the route table.</span> Write the arena as a graph — nodes, edges, headings — and produce <code>ROUTES</code> with BFS. Diff it against the hand-written table. Where they disagree, work out which is right and why. <em>Part 08.</em></li>
+    <li><span class="lead-in">Close the loop.</span> Put a marker on anything that moves, track it, write coordinates to a CSV, and animate it in QGIS. This is the whole system in miniature, and once it works the rest is detail. <em>Parts 01, 07 and 09.</em></li>
+  </ol>
+
+  <h3>Where to read further</h3>
+  <ul>
+    <li><span class="lead-in">Vision.</span> Szeliski, <em>Computer Vision: Algorithms and Applications</em> — free online, and the chapters on projection and calibration are the canonical treatment of Part 02.</li>
+    <li><span class="lead-in">Learning.</span> The Keras transfer-learning and fine-tuning guide is short and directly applicable; fast.ai if you want intuition before mathematics.</li>
+    <li><span class="lead-in">Control.</span> Brett Beauregard's PID series explains each term with real plots, including why derivative on a noisy signal misbehaves.</li>
+    <li><span class="lead-in">Robotics.</span> Thrun, Burgard and Fox, <em>Probabilistic Robotics</em> — the standard text on what to do when your sensors lie, which is the problem this project sidestepped with a camera.</li>
+    <li><span class="lead-in">Networking.</span> Beej's Guide to Network Programming — the framing lesson from Part 06, at length and with better jokes.</li>
+  </ul>
+
+  <div class="det" data-tag="the through-line">
+    <p>If you take one thing from all of this: <strong>most of the good decisions in this project were about moving a problem somewhere it was easier to solve.</strong> Localisation moved from the robot to a camera. Heading moved from the planner to one byte on the robot. Detection moved from a neural network to four numbers, because the scene was controlled enough to make it possible.</p>
+    <p>And most of the defects came from the opposite — a fact that lived in two places, silently disagreeing.</p>
+  </div>
+</section>
+
+<div class="end">
+  <p>Written against the reorganised GeoGuide repository. Every code excerpt is quoted from the working tree; the four flagged defects are real and reproducible.</p>
+</div>
+
+</main>
+</div>
+
+<script>
+(function () {
+  var links = Array.prototype.slice.call(document.querySelectorAll('#toc a'));
+  var byId = {};
+  links.forEach(function (a) { byId[a.getAttribute('href').slice(1)] = a; });
+  var sections = Array.prototype.slice.call(document.querySelectorAll('section[id]'));
+  if (!('IntersectionObserver' in window) || !sections.length) return;
+
+  var visible = {};
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) { visible[e.target.id] = e.isIntersecting; });
+    var current = null;
+    for (var i = 0; i < sections.length; i++) {
+      if (visible[sections[i].id]) { current = sections[i].id; break; }
+    }
+    links.forEach(function (a) { a.classList.remove('on'); });
+    if (current && byId[current]) { byId[current].classList.add('on'); }
+  }, { rootMargin: '-10% 0px -70% 0px', threshold: 0 });
+
+  sections.forEach(function (s) { io.observe(s); });
+})();
+</script>
